@@ -8,10 +8,10 @@ canvas.height = drawable_canvas.canvas.width;
 
 var path_maze = []
 const dir_move = {
-    '←':[-1, 0],
-    '→':[1, 0], 
-    '↑':[0, -1], 
-    '↓':[0, 1]
+    '←':[0, -1],
+    '→':[0, 1], 
+    '↑':[-1, 0], 
+    '↓':[1, 0]
 }
 const canvas_rect = canvas.getBoundingClientRect();
 size.value = 20;//git cookies annoying
@@ -46,16 +46,16 @@ function origin_shift(){
 
     for (let i = 0; i<1000; i++){
         direction_choices = [];
-        if (origin_pos[0]-1 >= 0){
+        if (origin_pos[1]-1 >= 0){
             direction_choices.push('←');
         }
-        if (origin_pos[0]+1 < size.value){
+        if (origin_pos[1]+1 < size.value){
             direction_choices.push('→');
         }
-        if (origin_pos[1]-1 >= 0){
+        if (origin_pos[0]-1 >= 0){
             direction_choices.push('↑');
         }
-        if (origin_pos[1]+1 < size.value){
+        if (origin_pos[0]+1 < size.value){
             direction_choices.push('↓');
         }
 
