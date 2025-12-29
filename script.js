@@ -5,6 +5,8 @@ const canvas = document.getElementById("display")
 const drawable_canvas = canvas.getContext("2d");
 
 var maze = []
+const canvas_rect = canvas.getBoundingClientRect();
+size.value = 20;//git cookies annoying
 generate_maze()
 console.log(size.value);
 console.log(maze);
@@ -75,15 +77,15 @@ function generate_maze(){
 }
 
 function display_maze(){
-    draw_line(0, 0, 450, 450)
+    draw_line(0, 0, 450, 0)
 }
 
 function draw_line(x1, y1, x2, y2) {
     const canvas_rect = canvas.getBoundingClientRect();
-    x1 = x1-canvas_rect.left;
-    y1 = y1-canvas_rect.left;
-    x2 = x2-canvas_rect.left;
-    y2 = y2-canvas_rect.left;
+    x1 = x1-canvas_rect.left+8;
+    y1 = y1-canvas_rect.top+10;
+    x2 = x2-canvas_rect.left+8;
+    y2 = y2-canvas_rect.top+10;
 
     drawable_canvas.beginPath();
     drawable_canvas.lineWidth = 5;
