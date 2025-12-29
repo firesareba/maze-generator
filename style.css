@@ -1,0 +1,15 @@
+body{
+    background-color: black;
+    color: antiquewhite;
+}
+
+select, button{
+    background-color: antiquewhite;
+    color: black;
+    border: none;
+    border-radius: 5px;
+}
+
+canvas {
+    border:2px solid red;
+}
