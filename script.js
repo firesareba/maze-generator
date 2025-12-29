@@ -87,13 +87,13 @@ function display_maze(){
     horizontal = [];
     vertical = [];
     for (let x = 0; x<(size.value*2+1); x++){
-        horizontal.push("-");
+        horizontal.push("█");
     }
     for (let y = 0; y<size.value; y++){
-        vertical.push("|");
+        vertical.push("█");
         vertical.push(" ");
     }
-    vertical.push("|");
+    vertical.push("█");
 
     for (let i = 0; i<size.value; i++){
         drawable_maze.push(horizontal.slice());
@@ -108,7 +108,7 @@ function display_maze(){
             if (direction == 'O'){
                 continue;
             }
-            drawable_maze[y*2+1+dir_move[direction][1]][(x*2+1)+dir_move[direction][0]] = " "
+            drawable_maze[y*2+1+dir_move[direction][0]][(x*2+1)+dir_move[direction][1]] = " ";
         }
     }
     console.log(drawable_maze)
