@@ -3,6 +3,8 @@ const size_label = document.getElementById("size-label");
 const generation_method = document.getElementById("generation-method");
 const canvas = document.getElementById("display")
 const drawable_canvas = canvas.getContext("2d");
+canvas.width = 450;
+canvas.height = drawable_canvas.canvas.width;
 
 var maze = []
 const canvas_rect = canvas.getBoundingClientRect();
@@ -77,15 +79,15 @@ function generate_maze(){
 }
 
 function display_maze(){
-    draw_line(0, 0, 450, 0)
+    draw_line(0, 0, 450, 450)
 }
 
 function draw_line(x1, y1, x2, y2) {
     const canvas_rect = canvas.getBoundingClientRect();
-    x1 = x1-canvas_rect.left+8;
-    y1 = y1-canvas_rect.top+10;
-    x2 = x2-canvas_rect.left+8;
-    y2 = y2-canvas_rect.top+10;
+    x1 = x1;
+    y1 = y1;
+    x2 = x2;
+    y2 = y2;
 
     drawable_canvas.beginPath();
     drawable_canvas.lineWidth = 5;

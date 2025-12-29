@@ -10,6 +10,8 @@ select, button{
     border-radius: 5px;
 }
 
-canvas {
+#display {
     border:1px solid red;
+    width: 450px;
+    aspect-ratio: 1;
 }
