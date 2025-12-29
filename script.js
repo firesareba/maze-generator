@@ -7,11 +7,19 @@ canvas.width = 450;
 canvas.height = drawable_canvas.canvas.width;
 
 var path_maze = []
+const dir_move = {
+    '←':[-1, 0],
+    '→':[1, 0], 
+    '↑':[0, -1], 
+    '↓':[0, 1]
+}
 const canvas_rect = canvas.getBoundingClientRect();
 size.value = 20;//git cookies annoying
 generate_maze()
 console.log(size.value);
 console.log(path_maze);
+
+
 
 size.addEventListener("input", function(e){
     size_label.innerHTML = "Size: "+ size.value;
@@ -23,37 +31,31 @@ size.addEventListener("change", function(e){
     console.log(path_maze);
 });
 
+
+
 function origin_shift(){
     //create base
-    for (let y = 0; y<path_maze.length; y++){
-        for (let x = 0; x<path_maze.length; x++){//path_maze.length = path_maze[0].length
+    for (let y = 0; y<size.value; y++){
+        for (let x = 0; x<size.value; x++){
             path_maze[y][x] = '→';
         }
-        path_maze[y][path_maze.length-1] = '↓';
+        path_maze[y][size.value-1] = '↓';
     }
-    origin_pos = [path_maze.length-1, path_maze.length-1];
+    origin_pos = [size.value-1, size.value-1];
     path_maze[origin_pos[0]][origin_pos[1]] = 'O';
-
-
-    dir_move = {
-        '←':[-1, 0],
-        '→':[1, 0], 
-        '↑':[0, -1], 
-        '↓':[0, 1]
-    }
 
     for (let i = 0; i<1000; i++){
         direction_choices = [];
         if (origin_pos[0]-1 >= 0){
             direction_choices.push('←');
         }
-        if (origin_pos[0]+1 < path_maze.length){
+        if (origin_pos[0]+1 < size.value){
             direction_choices.push('→');
         }
         if (origin_pos[1]-1 >= 0){
             direction_choices.push('↑');
         }
-        if (origin_pos[1]+1 < path_maze.length){
+        if (origin_pos[1]+1 < size.value){
             direction_choices.push('↓');
         }
 
@@ -79,20 +81,37 @@ function generate_maze(){
 }
 
 function display_maze(){
-    var drawable_maze = []
-    horizontal = []
-    vertical = []
-    for (let x = 0; x<(path_maze.length*2+1); x++){
-        horizontal.push("-")
-    }
-    for (let y = 0; y<path_maze.length; y++){
-        vertical.push("|")
-        vertical.push(" ")
-    }
-    vertical.push("|")
+    var drawable_maze = [];
 
-    console.log(horizontal)
-    console.log(vertical)
+    //generate template from which to remove walls
+    horizontal = [];
+    vertical = [];
+    for (let x = 0; x<(size.value*2+1); x++){
+        horizontal.push("-");
+    }
+    for (let y = 0; y<size.value; y++){
+        vertical.push("|");
+        vertical.push(" ");
+    }
+    vertical.push("|");
+
+    for (let i = 0; i<size.value; i++){
+        drawable_maze.push(horizontal.slice());
+        drawable_maze.push(vertical.slice());
+    }
+    drawable_maze.push(horizontal);
+
+
+    for (let y = 0; y<size.value; y++){
+        for (let x = 0; x<size.value; x++){
+            direction = path_maze[y][x];
+            if (direction == 'O'){
+                continue;
+            }
+            drawable_maze[y*2+1+dir_move[direction][1]][(x*2+1)+dir_move[direction][0]] = " "
+        }
+    }
+    console.log(drawable_maze)
     draw_line(0, 0, 450, 450)
 }
 
