@@ -28,6 +28,9 @@ size.addEventListener("change", function(e){
     generate_maze()
 });
 
+generation_method.addEventListener("change", function(e){
+    generate_maze()
+});
 
 
 function origin_shift(){
@@ -63,6 +66,39 @@ function origin_shift(){
     }
 }
 
+function dfs(row, col){
+    if (path_maze[row][col] != " "){
+        return NaN;
+    }
+
+    direction_choices = [];
+    if (col-1 >= 0){
+        direction_choices.push('←');
+    }
+    if (col+1 < size.value){
+        direction_choices.push('→');
+    }
+    if (row-1 >= 0){
+        direction_choices.push('↑');
+    }
+    if (row+1 < size.value){
+        direction_choices.push('↓');
+    }
+
+    if (direction_choices.length > 0){
+
+        direction_choices.sort(function (a, b) {
+            return Math.random() - 0.5;
+        });
+    
+          for (const direction of direction_choices){
+            path_maze[row][col] = direction
+            dfs(row+dir_move[direction][0], col+dir_move[direction][1])
+        }
+    }
+
+}
+
 function generate_maze(){
     path_maze = [];
     for (let row=0; row<size.value; row++){
@@ -73,12 +109,15 @@ function generate_maze(){
     }
     if (generation_method.value == "origin-shift"){
         origin_shift()
-        display_maze()
+    } else if (generation_method.value == "dfs"){
+        dfs(0, 0)
     }
+    display_maze()
 }
 
 function display_maze(){
     drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
+    console.log(path_maze)
 
     //filled walls
     edge_length = canvas.width/size.value;
