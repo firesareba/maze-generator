@@ -75,25 +75,19 @@ function origin_shift(){
 
 function get_direction_choices(row, col){
     direction_choices = [];
-    if (col-1 >= 0){
-        if (path_maze[row][col-1] == " "){
-            direction_choices.push('←');
+
+    for (direction of '←→↑↓'){
+        row = row+dir_move[direction][0];
+        col = col+dir_move[direction][1];
+        
+        if ((0 <= row && row < size.value) && (0 <= col && col < size.value)){
+            if (path_maze[row][col] == ""){
+                direction_choices.push(direction)
+            }
         }
-    }
-    if (col+1 < size.value){
-        if (path_maze[row][col+1] == " "){
-            direction_choices.push('→');
-        }
-    }
-    if (row-1 >= 0){
-        if (path_maze[row-1][col] == " "){
-            direction_choices.push('↑');
-        }
-    }
-    if (row+1 < size.value){
-        if (path_maze[row+1][col] == " "){
-            direction_choices.push('↓');
-        }
+
+        row = row-dir_move[direction][0];
+        col = col-dir_move[direction][1];
     }
     return direction_choices;
 }
@@ -134,16 +128,18 @@ function gen_3(){
             open_nodes.push([row, col]);
 
             direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
-            path_maze[row][col] = direction;
+            path_maze[row][col] = path_maze[row][col]+direction;
 
+            console.log(row, col, row+dir_move[direction][0], col+dir_move[direction][1])
             row = row+dir_move[direction][0];
             col = col+dir_move[direction][1];
             if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
                 open_nodes.push([row, col]);
             }
-        } else if (direction_choices == 1){
+        } else if (direction_choices.length == 1){
             path_maze[row][col] = direction_choices[0]
 
+            console.log(row, col, row+dir_move[direction][0], col+dir_move[direction][1])
             row = row+dir_move[direction][0];
             col = col+dir_move[direction][1];
             if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
@@ -158,7 +154,7 @@ function generate_maze(){
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         for (let col=0; col<size.value; col++){
-            path_maze[row].push(" ");
+            path_maze[row].push("");
         }
     }
     if (generation_method.value == "origin-shift"){
@@ -168,7 +164,6 @@ function generate_maze(){
         dfs(0, 0, '↑')
     } else if (generation_method.value == "gen-3"){
         gen_3()
-        console.log("3")
     }
     display_maze()
 }
