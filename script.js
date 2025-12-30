@@ -7,14 +7,21 @@ canvas.width = 450;
 canvas.height = drawable_canvas.canvas.width;
 
 var path_maze = []
+var visited = 0;
 const dir_move = {
     '←':[0, -1],
     '→':[0, 1], 
     '↑':[-1, 0], 
     '↓':[1, 0]
 }
+const opposite_dir = {
+    '←':'→',
+    '→':'←',
+    '↑':'↓',
+    '↓':'↑'
+}
 const canvas_rect = canvas.getBoundingClientRect();
-size.value = 20;//git cookies annoying
+size.value = 4;//git cookies annoying
 drawable_canvas.lineWidth = 2;
 generate_maze()
 
@@ -66,37 +73,51 @@ function origin_shift(){
     }
 }
 
-function dfs(row, col){
-    if (path_maze[row][col] != " "){
-        return NaN;
-    }
-
+function get_direction_choices(row, col){
     direction_choices = [];
     if (col-1 >= 0){
-        direction_choices.push('←');
-    }
-    if (col+1 < size.value){
-        direction_choices.push('→');
-    }
-    if (row-1 >= 0){
-        direction_choices.push('↑');
-    }
-    if (row+1 < size.value){
-        direction_choices.push('↓');
-    }
-
-    if (direction_choices.length > 0){
-
-        direction_choices.sort(function (a, b) {
-            return Math.random() - 0.5;
-        });
-    
-          for (const direction of direction_choices){
-            path_maze[row][col] = direction
-            dfs(row+dir_move[direction][0], col+dir_move[direction][1])
+        if (path_maze[row][col-1] == " "){
+            direction_choices.push('←');
         }
     }
+    if (col+1 < size.value){
+        if (path_maze[row][col+1] == " "){
+            direction_choices.push('→');
+        }
+    }
+    if (row-1 >= 0){
+        if (path_maze[row-1][col] == " "){
+            direction_choices.push('↑');
+        }
+    }
+    if (row+1 < size.value){
+        if (path_maze[row+1][col] == " "){
+            direction_choices.push('↓');
+        }
+    }
+    return direction_choices;
+}
 
+function dfs(row, col, prev){
+    visited += 1;
+    if (visited == size.value*size.value){
+        path_maze[row][col] = 'O';
+        return 0;
+    }
+
+    direction_choices = get_direction_choices(row, col);
+
+    while (direction_choices.length > 0){
+        direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
+        path_maze[row][col] = direction;
+        if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir[direction]) == 0){
+            return 0;
+        } else {
+            direction_choices = get_direction_choices(row, col);
+        }
+    }
+    path_maze[row][col] = prev;
+    return -1;
 }
 
 function generate_maze(){
@@ -110,7 +131,8 @@ function generate_maze(){
     if (generation_method.value == "origin-shift"){
         origin_shift()
     } else if (generation_method.value == "dfs"){
-        dfs(0, 0)
+        visited = 0;
+        dfs(0, 0, '↑')
     }
     display_maze()
 }
