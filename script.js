@@ -21,7 +21,7 @@ const opposite_dir = {
     '↓':'↑'
 }
 const canvas_rect = canvas.getBoundingClientRect();
-size.value = 4;//git cookies annoying
+size.value = 20;//git cookies annoying
 drawable_canvas.lineWidth = 2;
 generate_maze()
 
