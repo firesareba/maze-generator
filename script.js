@@ -15,9 +15,8 @@ const dir_move = {
 }
 const canvas_rect = canvas.getBoundingClientRect();
 size.value = 20;//git cookies annoying
+drawable_canvas.lineWidth = 2;
 generate_maze()
-console.log(size.value);
-console.log(path_maze);
 
 
 
@@ -27,24 +26,22 @@ size.addEventListener("input", function(e){
 
 size.addEventListener("change", function(e){
     generate_maze()
-    console.log(size.value);
-    console.log(path_maze);
 });
 
 
 
 function origin_shift(){
     //create base
-    for (let y = 0; y<size.value; y++){
-        for (let x = 0; x<size.value; x++){
-            path_maze[y][x] = '→';
+    for (let row = 0; row<size.value; row++){
+        for (let col = 0; col<size.value; col++){
+            path_maze[row][col] = '→';
         }
-        path_maze[y][size.value-1] = '↓';
+        path_maze[row][size.value-1] = '↓';
     }
     origin_pos = [size.value-1, size.value-1];
     path_maze[origin_pos[0]][origin_pos[1]] = 'O';
 
-    for (let i = 0; i<1000; i++){
+    for (let i = 0; i<100000; i++){
         direction_choices = [];
         if (origin_pos[1]-1 >= 0){
             direction_choices.push('←');
@@ -68,10 +65,10 @@ function origin_shift(){
 
 function generate_maze(){
     path_maze = [];
-    for (let y=0; y<size.value; y++){
+    for (let row=0; row<size.value; row++){
         path_maze.push([]);
-        for (let x=0; x<size.value; x++){
-            path_maze[y].push(" ");
+        for (let col=0; col<size.value; col++){
+            path_maze[row].push(" ");
         }
     }
     if (generation_method.value == "origin-shift"){
@@ -81,50 +78,47 @@ function generate_maze(){
 }
 
 function display_maze(){
-    var drawable_maze = [];
+    drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
 
-    //generate template from which to remove walls
-    horizontal = [];
-    vertical = [];
-    for (let x = 0; x<(size.value*2+1); x++){
-        horizontal.push("█");
+    //filled walls
+    edge_length = canvas.width/size.value;
+
+    for (let row = 0; row<=size.value; row++){
+        draw_line(0, edge_length*row, 450, edge_length*row, "antiquewhite");
     }
-    for (let y = 0; y<size.value; y++){
-        vertical.push("█");
-        vertical.push(" ");
+    for (let col = 0; col<=size.value; col++){
+        draw_line(edge_length*col, 0, edge_length*col, 450, "antiquewhite");
     }
-    vertical.push("█");
 
-    for (let i = 0; i<size.value; i++){
-        drawable_maze.push(horizontal.slice());
-        drawable_maze.push(vertical.slice());
-    }
-    drawable_maze.push(horizontal);
-
-
-    for (let y = 0; y<size.value; y++){
-        for (let x = 0; x<size.value; x++){
-            direction = path_maze[y][x];
+    //remove walls for path
+    for (let row = 0; row<size.value; row++){
+        for (let col = 0; col<size.value; col++){
+            direction = path_maze[row][col];
             if (direction == 'O'){
                 continue;
             }
-            drawable_maze[y*2+1+dir_move[direction][0]][(x*2+1)+dir_move[direction][1]] = " ";
+
+            y = (row*edge_length)+(edge_length/2);
+            x = (col*edge_length)+(edge_length/2);
+            if (dir_move[direction][0] == 0){//y doesn't change
+                x = x+(dir_move[direction][1]*edge_length/2)
+                draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, "black");
+            } else {
+                y = y+(dir_move[direction][0]*edge_length/2)
+                draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, "black");
+            }
         }
     }
-    console.log(drawable_maze)
-    draw_line(0, 0, 450, 450)
 }
 
-function draw_line(x1, y1, x2, y2) {
-    const canvas_rect = canvas.getBoundingClientRect();
+function draw_line(x1, y1, x2, y2, color) {
     x1 = x1;
     y1 = y1;
     x2 = x2;
     y2 = y2;
 
     drawable_canvas.beginPath();
-    drawable_canvas.lineWidth = 5;
-    drawable_canvas.strokeStyle = "antiquewhite";
+    drawable_canvas.strokeStyle = color;
     drawable_canvas.moveTo(x1, y1);
     drawable_canvas.lineTo(x2, y2);
     drawable_canvas.stroke();
