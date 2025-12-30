@@ -124,12 +124,13 @@ function gen_3(){
         if (path_maze[row][col] == ""){
             visited = visited + 1
         }
+        
         if (visited == size.value*size.value){
             path_maze[row][col] = 'O';
             return;
         }
         direction_choices = get_direction_choices(row, col)
-        console.log(direction_choices)
+        console.log(visited)
 
         if (direction_choices.length > 0){
             direction = direction_choices[0];
