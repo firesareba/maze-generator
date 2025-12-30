@@ -174,19 +174,21 @@ function display_maze(){
     //remove walls for path
     for (let row = 0; row<size.value; row++){
         for (let col = 0; col<size.value; col++){
-            direction = path_maze[row][col];
-            if (direction == 'O'){
+            children = path_maze[row][col];
+            if (children == 'O'){
                 continue;
             }
 
-            y = (row*edge_length)+(edge_length/2);
-            x = (col*edge_length)+(edge_length/2);
-            if (dir_move[direction][0] == 0){//y doesn't change
-                x = x+(dir_move[direction][1]*edge_length/2)
-                draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, "black");
-            } else {
-                y = y+(dir_move[direction][0]*edge_length/2)
-                draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, "black");
+            for (let direction of children){
+                y = (row*edge_length)+(edge_length/2);
+                x = (col*edge_length)+(edge_length/2);
+                if (dir_move[direction][0] == 0){//y doesn't change
+                    x = x+(dir_move[direction][1]*edge_length/2)
+                    draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, "black");
+                } else {
+                    y = y+(dir_move[direction][0]*edge_length/2)
+                    draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, "black");
+                }
             }
         }
     }
