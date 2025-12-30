@@ -120,21 +120,35 @@ function dfs(row, col, prev){
     return -1;
 }
 
-function bfs(){
-    open_nodes = [[0, 0]];
+function gen_3(){
+    var open_nodes = [[0, 0]];
+    var direction;
+    var direction_choices;
     while (open_nodes.length > 0){
         choice = Math.floor(Math.random()*open_nodes.length)
-        [row, col] = open_nodes[choice];
+        var [row, col] = open_nodes[choice];
         open_nodes.splice(choice, 1);
 
-        for (direction of get_direction_choices(row, col)){
+        direction_choices = get_direction_choices(row, col)
+        if (direction_choices.length > 1){
+            open_nodes.push([row, col]);
+
+            direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
+            path_maze[row][col] = direction;
+
             row = row+dir_move[direction][0];
             col = col+dir_move[direction][1];
-            if (!myMatrix.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
+            if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
                 open_nodes.push([row, col]);
             }
-            row = row-dir_move[direction][0];
-            col = col-dir_move[direction][1];
+        } else if (direction_choices == 1){
+            path_maze[row][col] = direction_choices[0]
+
+            row = row+dir_move[direction][0];
+            col = col+dir_move[direction][1];
+            if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
+                open_nodes.push([row, col]);
+            }
         }
     }
 }
@@ -152,8 +166,9 @@ function generate_maze(){
     } else if (generation_method.value == "dfs"){
         visited = 0;
         dfs(0, 0, '↑')
-    } else if (generation_method.value == "bfs"){
-
+    } else if (generation_method.value == "gen-3"){
+        gen_3()
+        console.log("3")
     }
     display_maze()
 }
