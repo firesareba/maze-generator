@@ -116,7 +116,29 @@ function dfs(row, col, prev){
 
 function gen_3(){
     var open_nodes = [[0, 0]];
-    while (open_nodes.length > 0){
+    while (open_nodes.length > 0){ 
+        row = open_nodes[0][0];
+        col = open_nodes[0][1];
+        open_nodes.shift();
+
+        if (path_maze[row][col] == ""){
+            visited = visited + 1
+        }
+        if (visited == size.value*size.value){
+            path_maze[row][col] = 'O';
+            return;
+        }
+        direction_choices = get_direction_choices(row, col)
+        console.log(direction_choices)
+
+        if (direction_choices.length > 0){
+            direction = direction_choices[0];
+            path_maze[row][col] = direction;
+    
+            row = row+dir_move[direction][0];
+            col = col+dir_move[direction][1];
+            open_nodes.push([row, col])
+        }
     }
 }
 
@@ -128,10 +150,11 @@ function generate_maze(){
             path_maze[row].push("");
         }
     }
+
+    visited = 0;
     if (generation_method.value == "origin-shift"){
         origin_shift()
     } else if (generation_method.value == "dfs"){
-        visited = 0;
         dfs(0, 0, '↑')
     } else if (generation_method.value == "gen-3"){
         gen_3()
