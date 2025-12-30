@@ -21,7 +21,7 @@ const opposite_dir = {
     '↓':'↑'
 }
 const canvas_rect = canvas.getBoundingClientRect();
-size.value = 20;//git cookies annoying
+size.value = 4;//git cookies annoying
 drawable_canvas.lineWidth = 2;
 generate_maze()
 
@@ -116,36 +116,7 @@ function dfs(row, col, prev){
 
 function gen_3(){
     var open_nodes = [[0, 0]];
-    var direction;
-    var direction_choices;
     while (open_nodes.length > 0){
-        choice = Math.floor(Math.random()*open_nodes.length)
-        var [row, col] = open_nodes[choice];
-        open_nodes.splice(choice, 1);
-
-        direction_choices = get_direction_choices(row, col)
-        if (direction_choices.length > 1){
-            open_nodes.push([row, col]);
-
-            direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
-            path_maze[row][col] = path_maze[row][col]+direction;
-
-            console.log(row, col, row+dir_move[direction][0], col+dir_move[direction][1])
-            row = row+dir_move[direction][0];
-            col = col+dir_move[direction][1];
-            if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
-                open_nodes.push([row, col]);
-            }
-        } else if (direction_choices.length == 1){
-            path_maze[row][col] = direction_choices[0]
-
-            console.log(row, col, row+dir_move[direction][0], col+dir_move[direction][1])
-            row = row+dir_move[direction][0];
-            col = col+dir_move[direction][1];
-            if (!open_nodes.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
-                open_nodes.push([row, col]);
-            }
-        }
     }
 }
 
