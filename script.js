@@ -120,6 +120,24 @@ function dfs(row, col, prev){
     return -1;
 }
 
+function bfs(){
+    open_nodes = [[0, 0]];
+    while (open_nodes.length > 0){
+        choice = Math.floor(Math.random()*open_nodes.length)
+        [row, col] = open_nodes[choice];
+        open_nodes.splice(choice, 1);
+
+        for (direction of get_direction_choices(row, col)){
+            row = row+dir_move[direction][0];
+            col = col+dir_move[direction][1];
+            if (!myMatrix.some(innerArray => innerArray[0] == row && innerArray[1] == col)){
+                open_nodes.push([row, col]);
+            }
+            row = row-dir_move[direction][0];
+            col = col-dir_move[direction][1];
+        }
+    }
+}
 
 function generate_maze(){
     path_maze = [];
@@ -135,7 +153,7 @@ function generate_maze(){
         visited = 0;
         dfs(0, 0, '↑')
     } else if (generation_method.value == "bfs"){
-        
+
     }
     display_maze()
 }
