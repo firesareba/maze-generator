@@ -130,10 +130,9 @@ function gen_3(){
             return;
         }
         direction_choices = get_direction_choices(row, col)
-        console.log(visited)
 
         if (direction_choices.length > 0){
-            direction = direction_choices[0];
+            direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
             path_maze[row][col] = direction;
     
             row = row+dir_move[direction][0];
