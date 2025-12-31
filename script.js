@@ -116,33 +116,46 @@ function dfs(row, col, prev){
 
 function gen_3(){
     var open_nodes = [[0, 0]];
-    while (open_nodes.length > 0){ 
-        row = open_nodes[0][0];
-        col = open_nodes[0][1];
-        open_nodes.shift();
+    var backup_nodes = [];
+    while (open_nodes.length + backup_nodes.length > 0){ 
+        if (open_nodes.length > 0){
+            row = open_nodes[0][0];
+            col = open_nodes[0][1];
+            open_nodes.shift();
+        } else {
+            row = backup_nodes[0][0];
+            col = backup_nodes[0][1];
+            backup_nodes.shift();
+        }
 
-        if (path_maze[row][col] == ""){
-            visited = visited + 1
-        }
-        
-        if (visited == size.value*size.value){
-            path_maze[row][col] = 'O';
-            return;
-        }
         direction_choices = get_direction_choices(row, col)
 
         if (direction_choices.length > 0){
-            direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-            path_maze[row][col] = direction;
-    
-            row = row+dir_move[direction][0];
-            col = col+dir_move[direction][1];
-            open_nodes.push([row, col])
+            if (direction_choices.length > 1){
+                backup_nodes.push([row, col])
+
+                direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
+                path_maze[row][col] = path_maze[row][col]+direction;
+        
+                row = row+dir_move[direction][0];
+                col = col+dir_move[direction][1];
+                open_nodes.push([row, col])
+            } else {
+                direction = direction_choices[0];
+                path_maze[row][col] = path_maze[row][col]+direction;
+        
+                row = row+dir_move[direction][0];
+                col = col+dir_move[direction][1];
+                open_nodes.push([row, col])
+            }
+        } else if (path_maze[row][col] == ""){
+            path_maze[row][col] = 'O';
         }
     }
 }
 
 function generate_maze(){
+    console.clear();
     path_maze = [];
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
