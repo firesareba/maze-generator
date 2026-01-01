@@ -220,7 +220,20 @@ function display_maze(){
 }
 
 function solve(){
-    
+    visited = []
+    for (let row=0; row<path_maze.length; row++){
+        visited.push([]);
+        for (let col=0; col<path_maze.length; col++){
+            visited[row].push(false);
+        }
+    }
+
+    queue = [[0, 0]]
+
+    while (queue.length > 0){
+        
+    }
+
 }
 
 function display_solve(show){
