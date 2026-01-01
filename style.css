@@ -1,6 +1,7 @@
 body{
     background-color: black;
     color: antiquewhite;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 select, button{
