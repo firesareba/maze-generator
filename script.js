@@ -219,8 +219,13 @@ function display_maze(){
     }
 }
 
-function solve(show){
+function solve(){
+    
+}
+
+function display_solve(show){
     if (show){
+        solve()
         console.log('Your hella lazy, get to work')
         solve_label.innerHTML = "Hide Solution: "
     } else {
@@ -254,68 +259,4 @@ function draw_line(x1, y1, x2, y2, type) {
         drawable_canvas.stroke();
 
     }
-}
-
-class PriorityQueue{
-    constructor() {
-        this.pq = [];
-    }
-    
-    parent(i){
-        return (i-1)/2;
-    }
-
-    child(i, dir){
-        if (dir == 'left'){
-            return (2*i)+1;
-        } else {
-            return (2*i)+2;
-        }
-    }
-
-    push(ele){
-        this.pq.push(ele);
-        i = this.pq.length-1;
-
-        while (i > 0){
-            parent_i = this.parent(i);
-            if (this.pq[parent_i] <= this.pq[i]){
-                break;
-            }
-
-            [this.pq[parent_i], this.pq[i]] = [this.pq[i], this.pq[parent_i]];
-            i = parent_i;
-        }
-    }
-
-    pop(){
-        res = this.pq[0];
-        this.pq[0] = this.pq[this.pq.length-1];
-        this.pq.length = this.pq.length-1;
-        i = 0;
-
-        while (this.child(i, 'right') < this.pq.length){
-            right_i =  this.child(i, 'right')
-            left_i =  this.child(i, 'left')
-            if (this.pq[right_i] >= this.pq[i] && this.pq[left_i] >= this.pq[i]){
-                break;
-            }
-
-            if (this.pq[right_i] < this.pq[left_i]) {
-                this.pq[i] = this.pq[right_i];
-                i = right_i;
-            } else {
-                this.pq[i] = this.pq[left_i];
-                i = left_i;
-            }
-        }
-
-        left_i = this.child(i, 'left');
-        if (left_i < this.pq.length){
-            if (this.pq[left_i] < this.pq[i]){
-                this.pq[i] = this.pq[left_i];
-            }
-        }
-    }
-
 }
