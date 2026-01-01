@@ -9,7 +9,6 @@ canvas.width = 2000;
 canvas.height = drawable_canvas.canvas.width;
 
 var path_maze = []
-var visited = 0;
 const dir_move = {
     '←':[0, -1],
     '→':[0, 1], 
@@ -99,8 +98,7 @@ function get_direction_choices(row, col){
 }
 
 function dfs(row, col, prev){
-    visited += 1;
-    if (visited == size.value*size.value){
+    if (row == 0 && col == 0 && prev != '↑'){
         path_maze[row][col] = 'O';
         return 0;
     }
@@ -109,14 +107,15 @@ function dfs(row, col, prev){
 
     while (direction_choices.length > 0){
         direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
-        path_maze[row][col] = direction;
+        path_maze[row][col] += direction;
+        console.log(direction)
         if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir[direction]) == 0){
             return 0;
         } else {
             direction_choices = get_direction_choices(row, col);
         }
     }
-    path_maze[row][col] = prev;
+    path_maze[row][col] += prev;
     return -1;
 }
 
@@ -178,6 +177,10 @@ function generate_maze(){
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
     }
+
+    path_maze[0][0] += '↑';
+    path_maze[size.value-1][size.value-1] += '↓';
+
     display_maze()
 }
 
