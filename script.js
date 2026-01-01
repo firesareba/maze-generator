@@ -186,6 +186,7 @@ function generate_maze(){
 
 function display_maze(){
     drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
+    console.log(path_maze)
 
     //filled walls
     edge_length = canvas.width/size.value;
@@ -201,11 +202,11 @@ function display_maze(){
     for (let row = 0; row<size.value; row++){
         for (let col = 0; col<size.value; col++){
             children = path_maze[row][col];
-            if (children == 'O'){
-                continue;
-            }
-
+            
             for (let direction of children){
+                if (direction == 'O'){
+                    continue;
+                }
                 y = (row*edge_length)+(edge_length/2);
                 x = (col*edge_length)+(edge_length/2);
                 if (dir_move[direction][0] == 0){//y doesn't change
