@@ -182,10 +182,10 @@ function display_maze(){
     edge_length = canvas.width/size.value;
 
     for (let row = 0; row<=size.value; row++){
-        draw_line(0, edge_length*row, canvas.width, edge_length*row, "antiquewhite");
+        draw_line(0, edge_length*row, canvas.width, edge_length*row, false);
     }
     for (let col = 0; col<=size.value; col++){
-        draw_line(edge_length*col, 0, edge_length*col, canvas.width, "antiquewhite");
+        draw_line(edge_length*col, 0, edge_length*col, canvas.width, false);
     }
 
     //remove walls for path
@@ -201,21 +201,39 @@ function display_maze(){
                 x = (col*edge_length)+(edge_length/2);
                 if (dir_move[direction][0] == 0){//y doesn't change
                     x = x+(dir_move[direction][1]*edge_length/2)
-                    draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, "black");
+                    draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, true);
                 } else {
                     y = y+(dir_move[direction][0]*edge_length/2)
-                    draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, "black");
+                    draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, true);
                 }
             }
         }
     }
 }
 
-function draw_line(x1, y1, x2, y2, color) {
-
-    drawable_canvas.beginPath();
-    drawable_canvas.strokeStyle = color;
-    drawable_canvas.moveTo(x1, y1);
-    drawable_canvas.lineTo(x2, y2);
-    drawable_canvas.stroke();
+function draw_line(x1, y1, x2, y2, remove) {
+    if (remove == true){
+        var x;
+        var y;
+        var rect_width;
+        var rect_height;
+        if (x1 == x2){
+            x = Math.min(x1, x2)-(drawable_canvas.width/2);
+            y = Math.min(y1, y2);
+            rect_width = drawable_canvas.width;
+            rect_height = Math.max(x1, x2) - Math.min(x1, x2);
+        } else {
+            x = Math.min(x1, x2);
+            y = Math.min(y1, y2)-(drawable_canvas.width/2);
+            rect_width = Math.max(x1, x2) - Math.min(x1, x2);
+            rect_height = drawable_canvas.width;
+        }
+        drawable_canvas.clearRect(x, y, rect_width, rect_height);
+    } else {
+        drawable_canvas.beginPath();
+        drawable_canvas.strokeStyle = 'antiquewhite';
+        drawable_canvas.moveTo(x1, y1);
+        drawable_canvas.lineTo(x2, y2);
+        drawable_canvas.stroke();
+    }
 }
