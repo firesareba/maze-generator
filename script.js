@@ -108,7 +108,6 @@ function dfs(row, col, prev){
     while (direction_choices.length > 0){
         direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
         path_maze[row][col] += direction;
-        console.log(direction)
         if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir[direction]) == 0){
             return 0;
         } else {
@@ -186,7 +185,6 @@ function generate_maze(){
 
 function display_maze(){
     drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
-    console.log(path_maze)
 
     //filled walls
     edge_length = canvas.width/size.value;
@@ -256,4 +254,68 @@ function draw_line(x1, y1, x2, y2, type) {
         drawable_canvas.stroke();
 
     }
+}
+
+class PriorityQueue{
+    constructor() {
+        this.pq = [];
+    }
+    
+    parent(i){
+        return (i-1)/2;
+    }
+
+    child(i, dir){
+        if (dir == 'left'){
+            return (2*i)+1;
+        } else {
+            return (2*i)+2;
+        }
+    }
+
+    push(ele){
+        this.pq.push(ele);
+        i = this.pq.length-1;
+
+        while (i > 0){
+            parent_i = this.parent(i);
+            if (this.pq[parent_i] <= this.pq[i]){
+                break;
+            }
+
+            [this.pq[parent_i], this.pq[i]] = [this.pq[i], this.pq[parent_i]];
+            i = parent_i;
+        }
+    }
+
+    pop(){
+        res = this.pq[0];
+        this.pq[0] = this.pq[this.pq.length-1];
+        this.pq.length = this.pq.length-1;
+        i = 0;
+
+        while (this.child(i, 'right') < this.pq.length){
+            right_i =  this.child(i, 'right')
+            left_i =  this.child(i, 'left')
+            if (this.pq[right_i] >= this.pq[i] && this.pq[left_i] >= this.pq[i]){
+                break;
+            }
+
+            if (this.pq[right_i] < this.pq[left_i]) {
+                this.pq[i] = this.pq[right_i];
+                i = right_i;
+            } else {
+                this.pq[i] = this.pq[left_i];
+                i = left_i;
+            }
+        }
+
+        left_i = this.child(i, 'left');
+        if (left_i < this.pq.length){
+            if (this.pq[left_i] < this.pq[i]){
+                this.pq[i] = this.pq[left_i];
+            }
+        }
+    }
+
 }
