@@ -8,23 +8,21 @@ const drawable_canvas = canvas.getContext("2d");
 canvas.width = 2000;
 canvas.height = drawable_canvas.canvas.width;
 
-var path_maze = []
 const dir_move = {
-    '←':[0, -1],
-    '→':[0, 1], 
-    '↑':[-1, 0], 
-    '↓':[1, 0]
+    0:[0, -1], //'←'
+    1:[-1, 0], //'↑'
+    2:[0, 1],  //'→'
+    3:[1, 0]   //'↓'
+    //4 is endpoint
 }
 const opposite_dir = {
-    '←':'→',
-    '→':'←',
-    '↑':'↓',
-    '↓':'↑'
+    //(x+2)%4
 }
-const canvas_rect = canvas.getBoundingClientRect();
+
 size.value = 4;//git cookies annoying
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
+var path_maze = []
 generate_maze()
 
 
@@ -49,44 +47,36 @@ function origin_shift(){
     //create base
     for (let row = 0; row<size.value; row++){
         for (let col = 0; col<size.value; col++){
-            path_maze[row][col] = '→';
+            path_maze[row][col][2] = true;
         }
-        path_maze[row][size.value-1] = '↓';
+        path_maze[row][size.value-1][2] = false;
+        path_maze[row][size.value-1][3] = true;
     }
     origin_pos = [size.value-1, size.value-1];
-    path_maze[origin_pos[0]][origin_pos[1]] = 'O';
+    path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
 
     for (let i = 0; i<size.value**3; i++){
-        direction_choices = [];
-        if (origin_pos[1]-1 >= 0){
-            direction_choices.push('←');
-        }
-        if (origin_pos[1]+1 < size.value){
-            direction_choices.push('→');
-        }
-        if (origin_pos[0]-1 >= 0){
-            direction_choices.push('↑');
-        }
-        if (origin_pos[0]+1 < size.value){
-            direction_choices.push('↓');
-        }
+        direction_choices = get_direction_choices(origin_pos[0], origin_pos[1])
 
         direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-        path_maze[origin_pos[0]][origin_pos[1]] = direction;
+
+        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, false];
+        path_maze[origin_pos[0]][origin_pos[1]][direction] = true;
+
         origin_pos = [origin_pos[0]+dir_move[direction][0], origin_pos[1]+dir_move[direction][1]];
-        path_maze[origin_pos[0]][origin_pos[1]] = 'O';
+        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
     }
 }
 
 function get_direction_choices(row, col){
     direction_choices = [];
 
-    for (direction of '←→↑↓'){
+    for (let direction = 0; direction < 4; direction++){//don't consider endpoint
         row = row+dir_move[direction][0];
         col = col+dir_move[direction][1];
         
         if ((0 <= row && row < size.value) && (0 <= col && col < size.value)){
-            if (path_maze[row][col] == ""){
+            if (!path_maze[row][col].includes(true) || generation_method.value == 'origin-shift'){
                 direction_choices.push(direction)
             }
         }
@@ -177,7 +167,7 @@ function generate_maze(){
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         for (let col=0; col<size.value; col++){
-            path_maze[row].push("");
+            path_maze[row].push([false, false, false, false, false]);
         }
     }
 
@@ -190,9 +180,9 @@ function generate_maze(){
         hunt_and_kill()
     }
 
-    make_bidirectional();
-    path_maze[0][0] += '↑';
-    path_maze[size.value-1][size.value-1] += '↓';
+    // make_bidirectional();
+    // path_maze[0][0] += '↑';
+    // path_maze[size.value-1][size.value-1] += '↓';
     console.log(path_maze)
 
     display_maze()
@@ -214,12 +204,13 @@ function display_maze(){
     //remove walls for path
     for (let row = 0; row<size.value; row++){
         for (let col = 0; col<size.value; col++){
-            children = path_maze[row][col];
+            direction_booleans = path_maze[row][col];
             
-            for (let direction of children){
-                if (direction == 'O'){
+            for (let direction = 0; direction < 4; direction++){
+                if (!direction_booleans[direction]){
                     continue;
                 }
+
                 y = (row*edge_length)+(edge_length/2);
                 x = (col*edge_length)+(edge_length/2);
                 if (dir_move[direction][0] == 0){//y doesn't change
