@@ -158,6 +158,19 @@ function hunt_and_kill(){
     }
 }
 
+function make_bidirectional(){
+    for (let row=0; row<path_maze.length; row++){
+        for (let col=0; col<path_maze.length; col++){
+            for (let direction of path_maze[row][col]){
+                if (direction == 'O'){
+                    continue;
+                }
+                path_maze[row+dir_move[direction][0]][col+dir_move[direction][1]] += opposite_dir[direction];
+            }
+        }
+    }
+}
+
 function generate_maze(){
     console.clear();
     path_maze = [];
@@ -177,8 +190,10 @@ function generate_maze(){
         hunt_and_kill()
     }
 
+    make_bidirectional();
     path_maze[0][0] += '↑';
     path_maze[size.value-1][size.value-1] += '↓';
+    console.log(path_maze)
 
     display_maze()
 }
