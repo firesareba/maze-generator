@@ -3,7 +3,7 @@ const size_label = document.getElementById("size-label");
 const generation_method = document.getElementById("generation-method");
 const canvas = document.getElementById("display")
 const drawable_canvas = canvas.getContext("2d");
-canvas.width = 1000;
+canvas.width = 2000;
 canvas.height = drawable_canvas.canvas.width;
 
 var path_maze = []
@@ -214,11 +214,13 @@ function display_maze(){
 
 function draw_line(x1, y1, x2, y2, remove) {
     if (remove == true){
+        drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
         drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'black';
         drawable_canvas.moveTo(x1, y1);
         drawable_canvas.lineTo(x2, y2);
         drawable_canvas.stroke();
+        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
     } else {
         drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'antiquewhite';
