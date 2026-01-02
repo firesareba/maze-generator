@@ -131,21 +131,21 @@ function hunt_and_kill(){
                 backup_nodes.push([row, col])
 
                 direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-                path_maze[row][col] = path_maze[row][col]+direction;
+                path_maze[row][col][direction] = true;
         
                 row = row+dir_move[direction][0];
                 col = col+dir_move[direction][1];
                 open_nodes.push([row, col])
             } else {
                 direction = direction_choices[0];
-                path_maze[row][col] = path_maze[row][col]+direction;
+                path_maze[row][col][direction] = true;
         
                 row = row+dir_move[direction][0];
                 col = col+dir_move[direction][1];
                 open_nodes.push([row, col])
             }
-        } else if (path_maze[row][col] == ""){
-            path_maze[row][col] = 'O';
+        } else if (!path_maze[row][col].includes(true)){
+            path_maze[row][col][4] = true;
         }
     }
 }
