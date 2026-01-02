@@ -15,9 +15,6 @@ const dir_move = {
     3:[1, 0]   //'↓'
     //4 is endpoint
 }
-const opposite_dir = {
-    //(x+2)%4
-}
 
 size.value = 4;//git cookies annoying
 drawable_canvas.lineWidth = 2;
@@ -42,6 +39,30 @@ generation_method.addEventListener("change", function(e){
 solve_checkbox.addEventListener("change", function(e){
         solve(solve_checkbox.checked);
 });
+
+
+function opposite_dir(direction){
+    return (direction+2)%4;
+}
+
+function get_direction_choices(row, col){
+    direction_choices = [];
+    
+    for (let direction = 0; direction < 4; direction++){//don't consider endpoint
+        row = row+dir_move[direction][0];
+        col = col+dir_move[direction][1];
+        
+        if ((0 <= row && row < size.value) && (0 <= col && col < size.value)){
+            if (!path_maze[row][col].includes(true) || generation_method.value == 'origin-shift'){
+                direction_choices.push(direction)
+            }
+        }
+        
+        row = row-dir_move[direction][0];
+        col = col-dir_move[direction][1];
+    }
+    return direction_choices;
+}
 
 function origin_shift(){
     //create base
@@ -68,28 +89,9 @@ function origin_shift(){
     }
 }
 
-function get_direction_choices(row, col){
-    direction_choices = [];
-
-    for (let direction = 0; direction < 4; direction++){//don't consider endpoint
-        row = row+dir_move[direction][0];
-        col = col+dir_move[direction][1];
-        
-        if ((0 <= row && row < size.value) && (0 <= col && col < size.value)){
-            if (!path_maze[row][col].includes(true) || generation_method.value == 'origin-shift'){
-                direction_choices.push(direction)
-            }
-        }
-
-        row = row-dir_move[direction][0];
-        col = col-dir_move[direction][1];
-    }
-    return direction_choices;
-}
-
 function dfs(row, col, prev){
-    if (row == 0 && col == 0 && prev != '↑'){
-        path_maze[row][col] = 'O';
+    if (row == 0 && col == 0 && prev != 1){
+        path_maze[row][col] = [false, false, false, false, true];
         return 0;
     }
 
@@ -97,14 +99,14 @@ function dfs(row, col, prev){
 
     while (direction_choices.length > 0){
         direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
-        path_maze[row][col] += direction;
-        if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir[direction]) == 0){
+        path_maze[row][col][direction] = true;
+        if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir(direction)) == 0){
             return 0;
         } else {
             direction_choices = get_direction_choices(row, col);
         }
     }
-    path_maze[row][col] += prev;
+    path_maze[row][col][prev] = true;
     return -1;
 }
 
@@ -175,7 +177,7 @@ function generate_maze(){
     if (generation_method.value == "origin-shift"){
         origin_shift()
     } else if (generation_method.value == "dfs"){
-        dfs(0, 0, '↑')
+        dfs(0, 0, 1)
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
     }
