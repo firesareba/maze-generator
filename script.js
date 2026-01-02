@@ -183,8 +183,8 @@ function generate_maze(){
     }
 
     // make_bidirectional();
-    // path_maze[0][0] += '↑';
-    // path_maze[size.value-1][size.value-1] += '↓';
+    path_maze[0][0][1] = true;
+    path_maze[size.value-1][size.value-1][3] = true;
     console.log(path_maze)
 
     display_maze()
