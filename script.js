@@ -236,10 +236,7 @@ function solve(){
 
     while (queue.length > 0){
         [row, col] = queue.shift();
-        if (visited[row][col]){
-            continue;
-        }
-        
+
         visited[row][col] = true;
         for (let direction = 0; direction < 4; direction++){
             if (path_maze[row][col][direction] && !visited[row+dir_move[direction][0]][col+dir_move[direction][1]]){
