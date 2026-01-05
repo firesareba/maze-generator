@@ -166,6 +166,7 @@ function generate_maze(){
     console.clear();
     path_maze = [];
     parents = [];
+    solve_checkbox.checked = false;
 
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
