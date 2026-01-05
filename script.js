@@ -41,7 +41,7 @@ generation_method.addEventListener("change", function(e){
 });
 
 solve_checkbox.addEventListener("change", function(e){
-    display_solve(solve_checkbox.checked);
+    display_solve();
 });
 
 
@@ -181,18 +181,17 @@ function generate_maze(){
         origin_shift()
     } else if (generation_method.value == "dfs"){
         dfs(0, 0, 1)
+        path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
     }
 
     make_bidirectional();
-    console.log('solving');
     solve();
-    // display_solve();
+    display_solve();
 
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
-    console.log('displaying');
     display_maze()
 }
 
@@ -276,8 +275,8 @@ function solve(){
 
 }
 
-function display_solve(show){
-    if (show){
+function display_solve(){
+    if (solve_checkbox.checked){
         edge_length = canvas.width/size.value;
         offset = edge_length/2;
 
