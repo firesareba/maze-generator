@@ -38,7 +38,7 @@ generation_method.addEventListener("change", function(e){
 });
 
 solve_checkbox.addEventListener("change", function(e){
-        solve(solve_checkbox.checked);
+    display_solve(solve_checkbox.checked);
 });
 
 
@@ -183,17 +183,10 @@ function generate_maze(){
 
     make_bidirectional();
     solve();
+    display_solve();
+
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
-
-    row = size.value-1;
-    col = size.value-1;
-    while (!(row == 0 && col == 0)){
-        console.log(row, col);
-        [row, col] = parents[row][col];
-    }
-    console.log(row, col);
-
     display_maze()
 }
 
@@ -246,7 +239,8 @@ function solve(){
                 child_col = col + dir_move[direction][1];
 
                 queue.push([child_row, child_col]);
-                if (parents[child_row][child_col].length == 0){
+
+                if (parents[child_row][child_col].length == 0 && !(child_row == 0 && child_col == 0)){
                     parents[child_row][child_col] = [row, col];
                 }
                 if (child_row == path_maze.length-1 && child_col == path_maze.length-1){
@@ -260,11 +254,16 @@ function solve(){
 
 function display_solve(show){
     if (show){
-        solve()
-        console.log('Your hella lazy, get to work')
+        row = size.value-1;
+        col = size.value-1;
+        while (parents[row][col].length == 2){
+            console.log(row, col);
+            [row, col] = parents[row][col];
+        }
+        console.log(row, col);
         solve_label.innerHTML = "Hide Solution: "
     } else {
-        console.log("Hi there, you look like u need to sleep")
+        display_maze();
         solve_label.innerHTML = "Show Solution: "
     }
 }
