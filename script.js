@@ -17,6 +17,7 @@ const dir_move = {
 }
 
 size.value = 4;//git cookies annoying
+solve_checkbox.checked = false;
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
 var path_maze = []
@@ -254,13 +255,16 @@ function solve(){
 
 function display_solve(show){
     if (show){
+        edge_length = canvas.width/size.value;
+        offset = edge_length/2;
+
         row = size.value-1;
         col = size.value-1;
         while (parents[row][col].length == 2){
-            console.log(row, col);
-            [row, col] = parents[row][col];
+            [parent_row, parent_col] = parents[row][col];
+            draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
+            [row, col] = [parent_row, parent_col];
         }
-        console.log(row, col);
         solve_label.innerHTML = "Hide Solution: "
     } else {
         display_maze();
