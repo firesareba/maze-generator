@@ -20,6 +20,7 @@ size.value = 4;//git cookies annoying
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
 var path_maze = []
+var parents = [];
 generate_maze()
 
 
@@ -161,10 +162,13 @@ function make_bidirectional(){
 function generate_maze(){
     console.clear();
     path_maze = [];
+    parents = [];
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
+        parents.push([]);
         for (let col=0; col<size.value; col++){
             path_maze[row].push([false, false, false, false, false]);
+            parents[row].push([]);
         }
     }
 
@@ -181,7 +185,14 @@ function generate_maze(){
     solve();
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
-    console.log(path_maze)
+
+    row = size.value-1;
+    col = size.value-1;
+    while (!(row == 0 && col == 0)){
+        console.log(row, col);
+        [row, col] = parents[row][col];
+    }
+    console.log(row, col);
 
     display_maze()
 }
@@ -224,23 +235,23 @@ function display_maze(){
 }
 
 function solve(){
-    visited = []
-    for (let row=0; row<path_maze.length; row++){
-        visited.push([]);
-        for (let col=0; col<path_maze.length; col++){
-            visited[row].push(false);
-        }
-    }
-
-    queue = [[0, 0]]
+    queue = [[0, 0]];
 
     while (queue.length > 0){
         [row, col] = queue.shift();
 
-        visited[row][col] = true;
         for (let direction = 0; direction < 4; direction++){
-            if (path_maze[row][col][direction] && !visited[row+dir_move[direction][0]][col+dir_move[direction][1]]){
-                queue.push([row+dir_move[direction][0], col+dir_move[direction][1]])
+            if (path_maze[row][col][direction]){
+                child_row = row + dir_move[direction][0];
+                child_col = col + dir_move[direction][1];
+
+                queue.push([child_row, child_col]);
+                if (parents[child_row][child_col].length == 0){
+                    parents[child_row][child_col] = [row, col];
+                }
+                if (child_row == path_maze.length-1 && child_col == path_maze.length-1){
+                    return
+                }
             }
         }
     }
