@@ -22,6 +22,8 @@ drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
 var path_maze = []
 var parents = [];
+var meet_node;
+var meet_node_adj;
 generate_maze()
 
 
@@ -164,6 +166,7 @@ function generate_maze(){
     console.clear();
     path_maze = [];
     parents = [];
+
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
@@ -183,11 +186,13 @@ function generate_maze(){
     }
 
     make_bidirectional();
+    console.log('solving');
     solve();
-    display_solve();
+    // display_solve();
 
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
+    console.log('displaying');
     display_maze()
 }
 
@@ -229,22 +234,40 @@ function display_maze(){
 }
 
 function solve(){
-    queue = [[0, 0]];
+    s_queue = [[0, 0]];
+    f_queue = [[size.value-1, size.value-1]];
 
-    while (queue.length > 0){
-        [row, col] = queue.shift();
-
+    while (s_queue.length > 0){
+        var [s_row, s_col] = s_queue.shift();
+        var [f_row, f_col] = f_queue.shift();
+        
         for (let direction = 0; direction < 4; direction++){
-            if (path_maze[row][col][direction]){
-                child_row = row + dir_move[direction][0];
-                child_col = col + dir_move[direction][1];
-
-                queue.push([child_row, child_col]);
-
+            if (path_maze[s_row][s_col][direction]){
+                child_row = s_row + dir_move[direction][0];
+                child_col = s_col + dir_move[direction][1];
+                
+                
                 if (parents[child_row][child_col].length == 0 && !(child_row == 0 && child_col == 0)){
-                    parents[child_row][child_col] = [row, col];
+                    s_queue.push([child_row, child_col]);
+                    parents[child_row][child_col] = [s_row, s_col, 's'];
+                }else if (parents[child_row][child_col][2] == 'f'){
+                    meet_node = [child_row, child_col];
+                    meet_node_adj = [s_row, s_col]
+                    return;
                 }
-                if (child_row == path_maze.length-1 && child_col == path_maze.length-1){
+            }
+            
+            if (path_maze[f_row][f_col][direction]){
+                child_row = f_row + dir_move[direction][0];
+                child_col = f_col + dir_move[direction][1];
+                
+                
+                if (parents[child_row][child_col].length == 0 && !(child_row == size.value-1 && child_col == size.value-1)){
+                    f_queue.push([child_row, child_col]);
+                    parents[child_row][child_col] = [f_row, f_col, 'f'];
+                } else if (parents[child_row][child_col][2] == 's'){
+                    meet_node = [child_row, child_col];
+                    meet_node_adj = [f_row, f_col]
                     return;
                 }
             }
@@ -258,13 +281,22 @@ function display_solve(show){
         edge_length = canvas.width/size.value;
         offset = edge_length/2;
 
-        row = size.value-1;
-        col = size.value-1;
-        while (parents[row][col].length == 2){
+        [row, col] = meet_node;
+        while (parents[row][col].length == 3){
             [parent_row, parent_col] = parents[row][col];
             draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
             [row, col] = [parent_row, parent_col];
         }
+
+        [row, col] = meet_node_adj;
+        while (parents[row][col].length == 3){
+            [parent_row, parent_col] = parents[row][col];
+            draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
+            [row, col] = [parent_row, parent_col];
+        }
+
+        draw_line(offset + (edge_length*meet_node[1]), offset + (edge_length*meet_node[0]), offset + (edge_length*meet_node_adj[1]), offset + (edge_length*meet_node_adj[0]), 'solve');
+
         solve_label.innerHTML = "Hide Solution: "
     } else {
         display_maze();
