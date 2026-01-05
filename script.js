@@ -93,25 +93,29 @@ function origin_shift(){
     }
 }
 
-function dfs(row, col, prev){
-    if (row == 0 && col == 0 && prev != 1){
-        path_maze[row][col] = [false, false, false, false, true];
-        return 0;
-    }
-
-    direction_choices = get_direction_choices(row, col);
-
-    while (direction_choices.length > 0){
-        direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
-        path_maze[row][col][direction] = true;
-        if (dfs(row+dir_move[direction][0], col+dir_move[direction][1], opposite_dir(direction)) == 0){
-            return 0;
-        } else {
+function dfs(row, col){
+    var stack = [[0,0]];
+    while (stack.length > 0){
+        [row, col] = stack.pop();
+        while (true){
+            console.log(row, col)
             direction_choices = get_direction_choices(row, col);
+            if (direction_choices.length > 0) {
+                if (direction_choices.length > 1){
+                    stack.push([row, col]);
+                    direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
+                } else{
+                    direction = direction_choices[0];
+                }
+                path_maze[row][col][direction] = true;
+                row += dir_move[direction][0];
+                col += dir_move[direction][1];
+            } else {
+                path_maze[row][col][4] = true;
+                break;
+            }
         }
     }
-    path_maze[row][col][prev] = true;
-    return -1;
 }
 
 function hunt_and_kill(){
