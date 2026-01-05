@@ -245,7 +245,7 @@ function solve(){
                     parents[child_row][child_col] = [row, col];
                 }
                 if (child_row == path_maze.length-1 && child_col == path_maze.length-1){
-                    return
+                    return;
                 }
             }
         }
