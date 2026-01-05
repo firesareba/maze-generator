@@ -115,13 +115,9 @@ function hunt_and_kill(){
     var backup_nodes = [];
     while (open_nodes.length + backup_nodes.length > 0){ 
         if (open_nodes.length > 0){
-            row = open_nodes[0][0];
-            col = open_nodes[0][1];
-            open_nodes.shift();
+            [row, col] = open_nodes.shift();
         } else {
-            row = backup_nodes[0][0];
-            col = backup_nodes[0][1];
-            backup_nodes.shift();
+            [row, col] = backup_nodes.shift();
         }
 
         direction_choices = get_direction_choices(row, col)
@@ -153,11 +149,10 @@ function hunt_and_kill(){
 function make_bidirectional(){
     for (let row=0; row<path_maze.length; row++){
         for (let col=0; col<path_maze.length; col++){
-            for (let direction of path_maze[row][col]){
-                if (direction == 'O'){
-                    continue;
+            for (let direction = 0; direction < 4; direction++){
+                if (path_maze[row][col][direction]){
+                    path_maze[row+dir_move[direction][0]][col+dir_move[direction][1]][opposite_dir(direction)] = true;
                 }
-                path_maze[row+dir_move[direction][0]][col+dir_move[direction][1]] += opposite_dir[direction];
             }
         }
     }
@@ -182,7 +177,8 @@ function generate_maze(){
         hunt_and_kill()
     }
 
-    // make_bidirectional();
+    make_bidirectional();
+    solve();
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
     console.log(path_maze)
@@ -239,7 +235,17 @@ function solve(){
     queue = [[0, 0]]
 
     while (queue.length > 0){
+        [row, col] = queue.shift();
+        if (visited[row][col]){
+            continue;
+        }
         
+        visited[row][col] = true;
+        for (let direction = 0; direction < 4; direction++){
+            if (path_maze[row][col][direction] && !visited[row+dir_move[direction][0]][col+dir_move[direction][1]]){
+                queue.push([row+dir_move[direction][0], col+dir_move[direction][1]])
+            }
+        }
     }
 
 }
