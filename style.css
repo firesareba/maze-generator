@@ -12,6 +12,5 @@ select, button{
 }
 
 #display {
-    width: 600px;/*95vmin; */
     aspect-ratio: 1;
 }

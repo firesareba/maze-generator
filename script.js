@@ -56,6 +56,7 @@ document.onkeydown = function(event){
     edge_length = canvas.width/size.value
     offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
+        event.preventDefault();
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
@@ -71,7 +72,6 @@ document.onkeydown = function(event){
                 alert("You solved it!");
             }
         } else {
-            console.log("Don't Walk over Walls!");
         }
     }
 };
@@ -201,9 +201,13 @@ function generate_maze(){
     console.clear();
     path_maze = [];
     parents = [];
+    visited = [];
+    user_pos = [0, 0];
     solve_checkbox.checked = false;
     edge_length = canvas.width/size.value
     offset = edge_length/2;
+
+    canvas.style.height = `${Math.max(600, size.value*10)}px`
 
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
@@ -215,7 +219,6 @@ function generate_maze(){
             visited[row].push(false);
         }
     }
-    console.log(visited)
 
     if (generation_method.value == "origin-shift"){
         origin_shift()
@@ -321,7 +324,6 @@ function display_solve(){
         [row, col] = meet_node;
         while (parents[row][col].length == 3){
             [parent_row, parent_col] = parents[row][col];
-            console.log(parent_row, parent_col, row, col)
             draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
             [row, col] = [parent_row, parent_col];
         }
