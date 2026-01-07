@@ -27,9 +27,6 @@ var meet_node;
 var meet_node_adj;
 var parents = [];
 
-var edge_length;
-var offset;
-
 var user_pos = [0, 0];
 generate_maze()
 
@@ -52,13 +49,14 @@ solve_checkbox.addEventListener("change", function(e){
 });
 
 document.onkeydown = function(event){
+    edge_length = canvas.width/size.value
     offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if ((0 <= new_pos[0] && new_pos[0] < size.value) && (0 <= new_pos[1] && new_pos[1] < size.value)){
-            user_pos = new_pos;
             draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'solve');
+            user_pos = new_pos;
             console.log(user_pos);
         } else {
             console.log("Stay in the maze!");
@@ -309,6 +307,7 @@ function display_solve(){
         [row, col] = meet_node;
         while (parents[row][col].length == 3){
             [parent_row, parent_col] = parents[row][col];
+            console.log(parent_row, parent_col, row, col)
             draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
             [row, col] = [parent_row, parent_col];
         }
