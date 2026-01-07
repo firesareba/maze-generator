@@ -59,7 +59,6 @@ document.onkeydown = function(event){
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
-            console.log(new_pos)
             if (visited[new_pos[0]][new_pos[1]]){
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove');
                 visited[user_pos[0]][user_pos[1]] = false;
@@ -68,6 +67,9 @@ document.onkeydown = function(event){
                 visited[user_pos[0]][user_pos[1]] = true;
             }
             user_pos = new_pos;
+            if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
+                alert("You solved it!");
+            }
         } else {
             console.log("Don't Walk over Walls!");
         }
@@ -342,34 +344,19 @@ function display_solve(){
 function draw_line(x1, y1, x2, y2, type) {
     if (type == 'remove'){
         drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
-        drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'black';
-        drawable_canvas.moveTo(x1, y1);
-        drawable_canvas.lineTo(x2, y2);
-        drawable_canvas.stroke();
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
     } else if (type == 'solve'){
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
-        drawable_canvas.beginPath();
-        drawable_canvas.strokeStyle = 'green';
-        drawable_canvas.moveTo(x1, y1);
-        drawable_canvas.lineTo(x2, y2);
-        drawable_canvas.stroke();
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
+        drawable_canvas.strokeStyle = 'limegreen';
     } else if (type == 'user'){
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
-        drawable_canvas.beginPath();
-        drawable_canvas.strokeStyle = 'blue';
-        drawable_canvas.moveTo(x1, y1);
-        drawable_canvas.lineTo(x2, y2);
-        drawable_canvas.stroke();
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
+        drawable_canvas.strokeStyle = 'cyan';
     }else if (type == 'base'){
-        drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'antiquewhite';
-        drawable_canvas.moveTo(x1, y1);
-        drawable_canvas.lineTo(x2, y2);
-        drawable_canvas.stroke();
-
+    }
+    drawable_canvas.beginPath();
+    drawable_canvas.moveTo(x1, y1);
+    drawable_canvas.lineTo(x2, y2);
+    drawable_canvas.stroke();
+    if (type == 'remove'){
+        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
     }
 }
