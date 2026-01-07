@@ -6,7 +6,7 @@ const solve_label = document.getElementById("solve-label");
 const canvas = document.getElementById("display")
 const drawable_canvas = canvas.getContext("2d");
 canvas.width = 2000;
-canvas.height = drawable_canvas.canvas.width;
+canvas.height = canvas.width;
 
 const dir_move = {
     0:[0, -1], //'←'
@@ -20,10 +20,17 @@ size.value = 4;//git cookies annoying
 solve_checkbox.checked = false;
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
+
 var path_maze = []
-var parents = [];
+
 var meet_node;
 var meet_node_adj;
+var parents = [];
+
+var edge_length;
+var offset;
+
+var user_pos = [0, 0];
 generate_maze()
 
 
@@ -43,6 +50,21 @@ generation_method.addEventListener("change", function(e){
 solve_checkbox.addEventListener("change", function(e){
     display_solve();
 });
+
+document.onkeydown = function(event){
+    offset = edge_length/2;
+    if (37 <= event.keyCode && event.keyCode <= 40){
+        direction = event.keyCode-37;
+        new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
+        if ((0 <= new_pos[0] && new_pos[0] < size.value) && (0 <= new_pos[1] && new_pos[1] < size.value)){
+            user_pos = new_pos;
+            draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'solve');
+            console.log(user_pos);
+        } else {
+            console.log("Stay in the maze!");
+        }
+    }
+};
 
 
 function opposite_dir(direction){
@@ -98,7 +120,6 @@ function dfs(row, col){
     while (stack.length > 0){
         [row, col] = stack.pop();
         while (true){
-            console.log(row, col)
             direction_choices = get_direction_choices(row, col);
             if (direction_choices.length > 0) {
                 if (direction_choices.length > 1){
@@ -171,6 +192,8 @@ function generate_maze(){
     path_maze = [];
     parents = [];
     solve_checkbox.checked = false;
+    edge_length = canvas.width/size.value
+    offset = edge_length/2;
 
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
@@ -282,8 +305,6 @@ function solve(){
 
 function display_solve(){
     if (solve_checkbox.checked){
-        edge_length = canvas.width/size.value;
-        offset = edge_length/2;
 
         [row, col] = meet_node;
         while (parents[row][col].length == 3){
@@ -318,6 +339,7 @@ function draw_line(x1, y1, x2, y2, type) {
         drawable_canvas.stroke();
         drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
     } else if (type == 'solve'){
+        console.log(x1, y1, x2, y2)
         drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
         drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'green';
