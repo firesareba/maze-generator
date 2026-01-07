@@ -49,17 +49,20 @@ solve_checkbox.addEventListener("change", function(e){
 });
 
 document.onkeydown = function(event){
+    if (user_pos[0] == size.value){
+        return;
+    }
     edge_length = canvas.width/size.value
     offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
         direction = event.keyCode-37;
-        new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
-        if ((0 <= new_pos[0] && new_pos[0] < size.value) && (0 <= new_pos[1] && new_pos[1] < size.value)){
+        if (path_maze[user_pos[0]][user_pos[1]][direction]){
+            new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
             draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'solve');
             user_pos = new_pos;
             console.log(user_pos);
         } else {
-            console.log("Stay in the maze!");
+            console.log("Don't Walk over Walls!");
         }
     }
 };
