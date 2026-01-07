@@ -28,6 +28,7 @@ var meet_node_adj;
 var parents = [];
 
 var user_pos = [0, 0];
+var visited = []
 generate_maze()
 
 
@@ -56,11 +57,17 @@ document.onkeydown = function(event){
     offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
         direction = event.keyCode-37;
-        if (path_maze[user_pos[0]][user_pos[1]][direction]){
-            new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
-            draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'solve');
+        new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
+        if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
+            console.log(new_pos)
+            if (visited[new_pos[0]][new_pos[1]]){
+                draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove');
+                visited[user_pos[0]][user_pos[1]] = false;
+            } else {
+                draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'user');
+                visited[user_pos[0]][user_pos[1]] = true;
+            }
             user_pos = new_pos;
-            console.log(user_pos);
         } else {
             console.log("Don't Walk over Walls!");
         }
@@ -199,13 +206,15 @@ function generate_maze(){
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
+        visited.push([]);
         for (let col=0; col<size.value; col++){
             path_maze[row].push([false, false, false, false, false]);
             parents[row].push([]);
+            visited[row].push(false);
         }
     }
+    console.log(visited)
 
-    visited = 0;
     if (generation_method.value == "origin-shift"){
         origin_shift()
     } else if (generation_method.value == "dfs"){
@@ -305,8 +314,8 @@ function solve(){
 }
 
 function display_solve(){
+    display_maze();
     if (solve_checkbox.checked){
-
         [row, col] = meet_node;
         while (parents[row][col].length == 3){
             [parent_row, parent_col] = parents[row][col];
@@ -326,7 +335,6 @@ function display_solve(){
 
         solve_label.innerHTML = "Hide Solution: "
     } else {
-        display_maze();
         solve_label.innerHTML = "Show Solution: "
     }
 }
@@ -341,7 +349,6 @@ function draw_line(x1, y1, x2, y2, type) {
         drawable_canvas.stroke();
         drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
     } else if (type == 'solve'){
-        console.log(x1, y1, x2, y2)
         drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
         drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'green';
@@ -349,7 +356,15 @@ function draw_line(x1, y1, x2, y2, type) {
         drawable_canvas.lineTo(x2, y2);
         drawable_canvas.stroke();
         drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
-    } else if (type == 'base'){
+    } else if (type == 'user'){
+        drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
+        drawable_canvas.beginPath();
+        drawable_canvas.strokeStyle = 'blue';
+        drawable_canvas.moveTo(x1, y1);
+        drawable_canvas.lineTo(x2, y2);
+        drawable_canvas.stroke();
+        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
+    }else if (type == 'base'){
         drawable_canvas.beginPath();
         drawable_canvas.strokeStyle = 'antiquewhite';
         drawable_canvas.moveTo(x1, y1);
