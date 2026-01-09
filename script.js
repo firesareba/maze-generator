@@ -126,12 +126,14 @@ function origin_shift(){
 }
 
 function dfs(row, col){
-    var stack = [[0,0]];
+    var stack = [[0,1], [1, 0]];
+    path_maze[0][0][2] = true;
+    path_maze[0][0][3] = true;
     while (stack.length > 0){
         [row, col] = stack.pop();
         while (true){
             direction_choices = get_direction_choices(row, col);
-            if (direction_choices.length == 0 || (stack.lenght > 0 && Math.random() >= 0.2)){
+            if (direction_choices.length == 0 ){
                 path_maze[row][col][4] = true;
                 break;
             } else {
