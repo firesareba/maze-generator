@@ -126,19 +126,14 @@ function origin_shift(){
 }
 
 function dfs(row, col){
-    var stack = [[0,1], [1, 0]];
-    path_maze[0][0][2] = true;
-    path_maze[0][0][3] = true;
-    while (stack.length > 0){
-        [row, col] = stack.pop();
+    var queue = [[0,0]];
+    while (queue.length > 0){
+        [row, col] = queue.shift();
         while (true){
             direction_choices = get_direction_choices(row, col);
-            if (direction_choices.length == 0 ){
-                path_maze[row][col][4] = true;
-                break;
-            } else {
+            if (direction_choices.length > 0) {
                 if (direction_choices.length > 1){
-                    stack.push([row, col]);
+                    queue.push([row, col]);
                     direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
                 } else{
                     direction = direction_choices[0];
@@ -146,10 +141,12 @@ function dfs(row, col){
                 path_maze[row][col][direction] = true;
                 row += dir_move[direction][0];
                 col += dir_move[direction][1];
+            } else {
+                path_maze[row][col][4] = true;
+                break;
             }
         }
     }
-    console.log(path_maze)
 }
 
 function hunt_and_kill(){
@@ -210,8 +207,6 @@ function generate_maze(){
     edge_length = canvas.width/size.value
     offset = edge_length/2;
 
-    canvas.style.height = `${Math.max(600, size.value*10)}px`
-
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
@@ -242,6 +237,7 @@ function generate_maze(){
 }
 
 function display_maze(){
+    // canvas.style.height = `${Math.max(600, size.value*10)}px`
     drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
 
     //filled walls
