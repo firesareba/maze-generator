@@ -130,24 +130,27 @@ function dfs(row, col){
     var stack = [[0,0]];
     while (!(row == size.value-1 && col == size.value-1)){
         [row, col] = stack.pop();
-        path_maze[row][col][4] = [false, false, false, false, true];
+        if (path_maze[row][col].includes(true)){
+            path_maze[row][col] = [false, false, false, false, false];
+        }
 
         direction_choices = get_direction_choices(row, col);
         if (direction_choices.length > 0) {
             if (direction_choices.length > 1){
-                stack.push([row, col]);
                 direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
             } else{
                 direction = direction_choices[0];
             }
+            stack.push([row, col]);
             path_maze[row][col][direction] = true;
             row += dir_move[direction][0];
             col += dir_move[direction][1];
+            stack.push([row, col])
         } else {
             path_maze[row][col][4] = true;
-            break;
         }
     }
+    console.log(row, col);
 }
 
 function hunt_and_kill(){
@@ -229,8 +232,8 @@ function generate_maze(){
     }
 
     make_bidirectional();
-    solve();
-    display_solve();
+    // solve();
+    // display_solve();
 
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
