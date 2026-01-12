@@ -16,7 +16,8 @@ const dir_move = {
     //4 is endpoint
 }
 
-size.value = 4;//git cookies annoying
+size.value = 13;//git cookies annoying
+size_label.innerHTML = "Size: "+ size.value;
 solve_checkbox.checked = false;
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
@@ -126,14 +127,14 @@ function origin_shift(){
 }
 
 function dfs(row, col){
-    var queue = [[0,0]];
-    while (queue.length > 0){
-        [row, col] = queue.shift();
-        while (true){
+    var seeds = [[0,0]];
+    while (seeds.length > 0){
+        [row, col] = seeds.shift();
+        for (let i = 0; i < 15; i++){
             direction_choices = get_direction_choices(row, col);
             if (direction_choices.length > 0) {
                 if (direction_choices.length > 1){
-                    queue.push([row, col]);
+                    seeds.push([row, col]);
                     direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
                 } else{
                     direction = direction_choices[0];
