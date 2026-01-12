@@ -147,7 +147,7 @@ function dfs(row, col){
                         row -= dir_move[direction][0];
                         col -= dir_move[direction][1];
                     }
-                    direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
+                    direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
                 } else{
                     direction = direction_choices[0];
                 }
