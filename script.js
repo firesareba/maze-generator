@@ -127,40 +127,27 @@ function origin_shift(){
 }
 
 function dfs(row, col){
-    var seeds = [[0, 0, 0]];
-    while (seeds.length > 0){
-        [row, col, direction] = seeds.shift();
-        if (path_maze[row][col].includes(true)){
-            continue;
-        }
-        path_maze[row][col][direction] = true;
+    var stack = [[0,0]];
+    while (!(row == size.value-1 && col == size.value-1)){
+        [row, col] = stack.pop();
+        path_maze[row][col][4] = [false, false, false, false, true];
 
-        for (let count = 0; count < 15; count++){
-            direction_choices = get_direction_choices(row, col);
-            if (direction_choices.length > 0) {
-                if (direction_choices.length > 1){
-                    for (let i = 0; i < direction_choices.length; i++){
-                        direction = direction_choices[i];
-                        row += dir_move[direction][0];
-                        col += dir_move[direction][1];
-                        seeds.push([row, col, opposite_dir(direction)]);
-                        row -= dir_move[direction][0];
-                        col -= dir_move[direction][1];
-                    }
-                    direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-                } else{
-                    direction = direction_choices[0];
-                }
-                path_maze[row][col][direction] = true;
-                row += dir_move[direction][0];
-                col += dir_move[direction][1];
-            } else {
-                path_maze[row][col][4] = true;
-                break;
+        direction_choices = get_direction_choices(row, col);
+        if (direction_choices.length > 0) {
+            if (direction_choices.length > 1){
+                stack.push([row, col]);
+                direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
+            } else{
+                direction = direction_choices[0];
             }
+            path_maze[row][col][direction] = true;
+            row += dir_move[direction][0];
+            col += dir_move[direction][1];
+        } else {
+            path_maze[row][col][4] = true;
+            break;
         }
     }
-    path_maze[0][0][0] = false;
 }
 
 function hunt_and_kill(){
