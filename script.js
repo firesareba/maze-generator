@@ -162,8 +162,21 @@ function dfs(row, col){
 
 
     //Check for open
-    for (let check_row = 0; check_row < size.value; check_row++){
-        for (let check_col = 0; check_col < size.value; check_col++){
+    rows_to_check = [];
+    for (let i = 0; i < size.value; i++){
+        rows_to_check.push(i);
+    }
+    
+    while (rows_to_check.length > 0){
+        check_row = rows_to_check.splice(Math.floor(Math.random()*rows_to_check.length), 1)[0];
+
+        cols_to_check = [];
+        for (let i = 0; i < size.value; i++){
+            cols_to_check.push(i);
+        }
+        while (cols_to_check.length > 0){
+            check_col = cols_to_check.splice(Math.floor(Math.random()*cols_to_check.length), 1)[0];
+
             if (get_direction_choices(check_row, check_col).length > 0){
                 var stack = [[check_row,check_col]];
                 while (stack.length > 0){
