@@ -172,10 +172,12 @@ function dfs(row, col){
     for (let row = 0; row < size.value; row++){
         for (let col = 0; col < size.value; col++){
             if (!solution_path.has(`${row}, ${col}`)){
-                path_maze[row][col] = [false, false, false, false, false];
-                console.log(`RESET: ${row}, ${col}`, path_maze[row][col])
-            } else {
-                // console.log(row, col)
+                console.log("___________________________________________")
+                console.log(`RESET: ${row}, ${col}`)
+                for (let i = 0; i < 5; i++){
+                    path_maze[row][col][i] = false;
+                    console.log(path_maze[row][col])
+                }
             }
         }    
     }
