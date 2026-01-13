@@ -22,7 +22,7 @@ solve_checkbox.checked = false;
 drawable_canvas.lineWidth = 2;
 drawable_canvas.lineCap = 'round';
 
-var path_maze = []
+var path_maze = [];
 
 var meet_node;
 var meet_node_adj;
