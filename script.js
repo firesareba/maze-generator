@@ -167,13 +167,15 @@ function dfs(row, col){
         solution_path.add(`${row}, ${col}`);
     }
 
+    console.log(solution_path)
     //Reset non-solution path visited(endnodes)
     for (let row = 0; row < size.value; row++){
         for (let col = 0; col < size.value; col++){
             if (!solution_path.has(`${row}, ${col}`)){
                 path_maze[row][col] = [false, false, false, false, false];
-            }else{
-                console.log(row, col)
+                console.log(`RESET: ${row}, ${col}`, path_maze[row][col])
+            } else {
+                // console.log(row, col)
             }
         }    
     }
@@ -186,6 +188,7 @@ function dfs(row, col){
         rows_to_check.push(i);
     }
     
+    console.log(path_maze)
     console.log("______________________________________________________________________________")
 
     while (rows_to_check.length > 0){
@@ -224,7 +227,6 @@ function dfs(row, col){
             }
         }    
     }
-    console.log(path_maze)
 }
 
 function hunt_and_kill(){
