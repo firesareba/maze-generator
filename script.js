@@ -132,7 +132,7 @@ function dfs(row, col){
     while (!(row == size.value-1 && col == size.value-1)){
         [row, col] = stack.pop();
         if (path_maze[row][col].includes(true)){
-            path_maze[row][col] = [false, false, false, false, true];
+            path_maze[row][col] = [false, false, false, false, false];
         }
 
         direction_choices = get_direction_choices(row, col);
@@ -152,36 +152,12 @@ function dfs(row, col){
         }
     }
 
-    [row, col] = [0, 0];
-    solution_path = new Set();
-    solution_path.add(`${row}, ${col}`);
-
-    while (!(row == size.value-1 && col == size.value-1)){
-        for (let direction = 0; direction < 4; direction++){
-            if (path_maze[row][col][direction]){
-                row = row+dir_move[direction][0];
-                col = col+dir_move[direction][1];
-                break;
-            }
-        }
-        solution_path.add(`${row}, ${col}`);
-    }
-
-    console.log(solution_path)
     //Reset non-solution path visited(endnodes)
     for (let row = 0; row < size.value; row++){
         for (let col = 0; col < size.value; col++){
-            if (!solution_path.has(`${row}, ${col}`)){
-                console.log("___________________________________________")
-                console.log(`RESET: ${row}, ${col}`)
-                for (let i = 0; i < 5; i++){
-                    path_maze[row][col][i] = false;
-                    console.log(path_maze)
-                }
-            }
+            path_maze[row][col][4] = false;
         }    
     }
-    console.log(path_maze)
     path_maze[row][col][4] = true;//except for ending
 
 
@@ -191,8 +167,6 @@ function dfs(row, col){
         rows_to_check.push(i);
     }
     
-    console.log("______________________________________________________________________________")
-
     while (rows_to_check.length > 0){
         check_row = rows_to_check.splice(Math.floor(Math.random()*rows_to_check.length), 1)[0];
 
@@ -204,7 +178,6 @@ function dfs(row, col){
             check_col = cols_to_check.splice(Math.floor(Math.random()*cols_to_check.length), 1)[0];
 
             if (get_direction_choices(check_row, check_col).length > 0 && path_maze[check_row][check_col].includes(true)){
-                console.log(check_row, check_col);
                 var stack = [[check_row,check_col]];
                 while (stack.length > 0){
                     [row, col] = stack.pop();
