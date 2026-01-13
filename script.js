@@ -151,51 +151,34 @@ function dfs(row, col){
             path_maze[row][col][4] = true;
         }
     }
+    path_maze[row][col][4] = true;
 
     //Check for open
     for (let check_row = 0; check_row < size.value; check_row++){
         for (let check_col = 0; check_col < size.value; check_col++){
             if (get_direction_choices(check_row, check_col).length > 0){
-                var stack = [[check_row, check_col]];
+                var stack = [[check_row,check_col]];
                 while (stack.length > 0){
                     [row, col] = stack.pop();
-                    if (path_maze[row][col].includes(true)){
-                        break;
-                    }
-    
-                    direction_choices = get_direction_choices(row, col);
-                    if (direction_choices.length > 0) {
-                        if (direction_choices.length > 1){
-                            direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-                        } else{
-                            direction = direction_choices[0];
+                    while (true){
+                        direction_choices = get_direction_choices(row, col);
+                        if (direction_choices.length > 0) {
+                            if (direction_choices.length > 1){
+                                stack.push([row, col]);
+                                direction = direction_choices[Math.floor(Math.random()*direction_choices.length)]
+                            } else{
+                                direction = direction_choices[0];
+                            }
+                            path_maze[row][col][direction] = true;
+                            row += dir_move[direction][0];
+                            col += dir_move[direction][1];
+                        } else {
+                            path_maze[row][col][4] = true;
+                            break;
                         }
-                        stack.push([row, col]);
-                        path_maze[row][col][direction] = true;
-                        row += dir_move[direction][0];
-                        col += dir_move[direction][1];
-                        stack.push([row, col])
-                    } else {
-                        break;
                     }
                 }
-            }// else if (!path_maze[check_row][check_col].includes(true)){
-            //     direction_choices = [];
-
-            //     for (let direction = 0; direction < 4; direction++){//don't consider endpoint
-            //         row = row+dir_move[direction][0];
-            //         col = col+dir_move[direction][1];
-                    
-            //         if ((0 <= row && row < size.value) && (0 <= col && col < size.value)){
-            //             direction_choices.push(direction)
-            //         }
-                    
-            //         row = row-dir_move[direction][0];
-            //         col = col-dir_move[direction][1];
-            //     }
-            //     direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-            //     path_maze[row][col][direction] = true;
-            // }
+            }
         }    
     }
 }
