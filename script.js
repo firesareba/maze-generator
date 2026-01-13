@@ -151,7 +151,6 @@ function dfs(row, col){
             path_maze[row][col][4] = true;
         }
     }
-    path_maze[row][col][4] = true;
 
     //Reset non-solution path visited(endnodes)
     for (let row = 0; row < size.value; row++){
@@ -159,6 +158,8 @@ function dfs(row, col){
             path_maze[row][col][4] = false;
         }    
     }
+    path_maze[row][col][4] = true;//except for ending
+
 
     //Check for open
     for (let check_row = 0; check_row < size.value; check_row++){
