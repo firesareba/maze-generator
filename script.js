@@ -176,11 +176,12 @@ function dfs(row, col){
                 console.log(`RESET: ${row}, ${col}`)
                 for (let i = 0; i < 5; i++){
                     path_maze[row][col][i] = false;
-                    console.log(path_maze[row][col])
+                    console.log(path_maze)
                 }
             }
         }    
     }
+    console.log(path_maze)
     path_maze[row][col][4] = true;//except for ending
 
 
@@ -190,7 +191,6 @@ function dfs(row, col){
         rows_to_check.push(i);
     }
     
-    console.log(path_maze)
     console.log("______________________________________________________________________________")
 
     while (rows_to_check.length > 0){
