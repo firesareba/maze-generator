@@ -232,7 +232,7 @@ function hunt_and_kill(){
         
                 row = row+dir_move[direction][0];
                 col = col+dir_move[direction][1];
-                open_nodes.push([row, col])
+                open_nodes.push([row, col]);
             }
         } else if (!path_maze[row][col].includes(true)){
             path_maze[row][col][4] = true;
