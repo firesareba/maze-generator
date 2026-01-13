@@ -203,7 +203,7 @@ function dfs(row, col){
         while (cols_to_check.length > 0){
             check_col = cols_to_check.splice(Math.floor(Math.random()*cols_to_check.length), 1)[0];
 
-            if (get_direction_choices(check_row, check_col).length > 0 && path_maze[check_row][check_row].includes(true)){
+            if (get_direction_choices(check_row, check_col).length > 0 && path_maze[check_row][check_col].includes(true)){
                 console.log(check_row, check_col);
                 var stack = [[check_row,check_col]];
                 while (stack.length > 0){
