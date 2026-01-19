@@ -6,14 +6,22 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <canvas id="display"></canvas>
+        <div class="display">
+            <canvas id="maze"></canvas>
+            <canvas id="user"></canvas>
+            <canvas id="solution"></canvas>
+            <canvas id="blind"></canvas>
+        </div>
+
         <select id="generation-method">
             <option value="dfs">DFS</option>
             <option value="hunt-and-kill">Hunt and Kill</option>
             <option value="origin-shift">Origin Shift</option>
         </select>
+
         <label id="size-label">Size: 4</label>
         <input id="size" type="range" min="2" max="450" value="20">
+        
         <label id="solve-label">Show Solution: </label>
         <input id="solve-checkbox" type="checkbox">
     </body>
