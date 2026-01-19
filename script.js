@@ -277,16 +277,13 @@ function make_bidirectional(){
     }
 }
 
-function generate_maze(){
+function resetAll(){
     console.clear();
     path_maze = [];
     parents = [];
     visited = [];
     user_pos = [0, 0];
     solve_checkbox.checked = false;
-    edge_length = maze_canvas.width/size.value
-    offset = edge_length/2;
-
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
@@ -297,6 +294,17 @@ function generate_maze(){
             visited[row].push(false);
         }
     }
+
+    drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
+    drawable_user_canvas.clearRect(0, 0, user_canvas.width, user_canvas.height);
+    drawable_blind_canvas.clearRect(0, 0, blind_canvas.width, blind_canvas.height);
+    drawable_solution_canvas.clearRect(0, 0, solution_canvas.width, solution_canvas.height);
+}
+
+function generate_maze(){
+    resetAll();
+    edge_length = maze_canvas.width/size.value
+    offset = edge_length/2;
 
     if (generation_method.value == "origin-shift"){
         origin_shift()
@@ -315,7 +323,6 @@ function generate_maze(){
     path_maze[size.value-1][size.value-1][3] = true;
     display_maze()
 }
-
 
 function solve(){
     s_queue = [[0, 0]];
@@ -380,7 +387,6 @@ function display_solve(){
 
 function display_maze(){
     // maze_canvas.style.height = `${Math.max(600, size.value*10)}px`
-    drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
 
     //filled walls
     edge_length = maze_canvas.width/size.value;
