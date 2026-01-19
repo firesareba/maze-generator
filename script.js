@@ -429,7 +429,7 @@ function draw_line(x1, y1, x2, y2, type) {
         curr_canvas.strokeStyle = 'black';
     } else if (type == 'solve'){
         curr_canvas = drawable_solution_canvas;
-        curr_canvas.strokeStyle = 'limegreen';
+        curr_canvas.strokeStyle = 'rgb(0, 255, 0)';
     } else if (type == 'user'){
         curr_canvas = drawable_user_canvas;
         curr_canvas.strokeStyle = 'cyan';
