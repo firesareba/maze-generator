@@ -25,3 +25,21 @@ canvas {
     height: 600px;
     aspect-ratio: 1;
 }
+
+#maze{
+    z-index: 1;
+}
+
+#user{
+    z-index: 2;
+}
+
+#blind{
+    z-index: 3;
+}
+
+#solution{
+    z-index: 4;
+    opacity: 0%;
+}
+

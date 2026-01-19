@@ -1,13 +1,37 @@
+//#region access html
 const generation_method = document.getElementById("generation-method");
 const size = document.getElementById("size");
 const size_label = document.getElementById("size-label");
 const solve_checkbox = document.getElementById("solve-checkbox");
 const solve_label = document.getElementById("solve-label");
-const canvas = document.getElementById("maze")
-const drawable_canvas = canvas.getContext("2d");
-canvas.width = 2000;
-canvas.height = canvas.width;
 
+const maze_canvas = document.getElementById("maze")
+const drawable_maze_canvas = maze_canvas.getContext("2d");
+const user_canvas = document.getElementById("user")
+const drawable_user_canvas = user_canvas.getContext("2d");
+const solution_canvas = document.getElementById("solution")
+const drawable_solution_canvas = solution_canvas.getContext("2d");
+const blind_canvas = document.getElementById("blind")
+const drawable_blind_canvas = blind_canvas.getContext("2d");
+maze_canvas.width = 2000;
+maze_canvas.height = maze_canvas.width;
+user_canvas.width = 2000;
+user_canvas.height = user_canvas.width;
+blind_canvas.width = 2000;
+blind_canvas.height = blind_canvas.width;
+solution_canvas.width = 2000;
+solution_canvas.height = solution_canvas.width;
+//#endregion
+
+//#region cookies
+size.value = 13;
+size_label.innerHTML = "Size: "+ size.value;
+solve_checkbox.checked = false;
+drawable_maze_canvas.lineWidth = 2;
+drawable_maze_canvas.lineCap = 'round';
+//#endregion
+
+//#region constants
 const dir_move = {
     0:[0, -1], //'←'
     1:[-1, 0], //'↑'
@@ -16,11 +40,6 @@ const dir_move = {
     //4 is endpoint
 }
 
-size.value = 13;//git cookies annoying
-size_label.innerHTML = "Size: "+ size.value;
-solve_checkbox.checked = false;
-drawable_canvas.lineWidth = 2;
-drawable_canvas.lineCap = 'round';
 
 var path_maze = [];
 
@@ -30,10 +49,9 @@ var parents = [];
 
 var user_pos = [0, 0];
 var visited = []
-generate_maze()
+//#endregion
 
-
-
+//#region listeners
 size.addEventListener("input", function(e){
     size_label.innerHTML = "Size: "+ size.value;
 });
@@ -47,14 +65,20 @@ generation_method.addEventListener("change", function(e){
 });
 
 solve_checkbox.addEventListener("change", function(e){
-    display_solve();
+    if (solve_checkbox.checked){
+        solution_canvas.style.opacity = '100%';
+        solve_label.innerHTML = "Hide Solution: "
+    } else {
+        solution_canvas.style.opacity = '0%';
+        solve_label.innerHTML = "Show Solution: "
+    }
 });
 
 document.onkeydown = function(event){
     if (user_pos[0] == size.value){
         return;
     }
-    edge_length = canvas.width/size.value
+    edge_length = maze_canvas.width/size.value
     offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
         event.preventDefault();
@@ -72,11 +96,12 @@ document.onkeydown = function(event){
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
                 alert("You solved it!");
             }
-        } else {
         }
     }
 };
+//#endregion
 
+generate_maze()
 
 function opposite_dir(direction){
     return (direction+2)%4;
@@ -259,7 +284,7 @@ function generate_maze(){
     visited = [];
     user_pos = [0, 0];
     solve_checkbox.checked = false;
-    edge_length = canvas.width/size.value
+    edge_length = maze_canvas.width/size.value
     offset = edge_length/2;
 
     for (let row=0; row<size.value; row++){
@@ -284,54 +309,18 @@ function generate_maze(){
 
     make_bidirectional();
     solve();
+    display_solve();
 
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
     display_maze()
 }
 
-function display_maze(){
-    // canvas.style.height = `${Math.max(600, size.value*10)}px`
-    drawable_canvas.clearRect(0, 0, canvas.width, canvas.height);
-
-    //filled walls
-    edge_length = canvas.width/size.value;
-
-    for (let row = 0; row<=size.value; row++){
-        draw_line(0, edge_length*row, canvas.width, edge_length*row, 'base');
-    }
-    for (let col = 0; col<=size.value; col++){
-        draw_line(edge_length*col, 0, edge_length*col, canvas.width, 'base');
-    }
-
-    //remove walls for path
-    for (let row = 0; row<size.value; row++){
-        for (let col = 0; col<size.value; col++){
-            direction_booleans = path_maze[row][col];
-            
-            for (let direction = 0; direction < 4; direction++){
-                if (!direction_booleans[direction]){
-                    continue;
-                }
-
-                y = (row*edge_length)+(edge_length/2);
-                x = (col*edge_length)+(edge_length/2);
-                if (dir_move[direction][0] == 0){//y doesn't change
-                    x = x+(dir_move[direction][1]*edge_length/2)
-                    draw_line(x, y-(edge_length/2)+drawable_canvas.lineWidth, x, y+(edge_length/2)-drawable_canvas.lineWidth, 'remove');
-                } else {
-                    y = y+(dir_move[direction][0]*edge_length/2)
-                    draw_line(x-(edge_length/2)+drawable_canvas.lineWidth, y, x+(edge_length/2)-drawable_canvas.lineWidth, y, 'remove');
-                }
-            }
-        }
-    }
-}
 
 function solve(){
     s_queue = [[0, 0]];
     f_queue = [[size.value-1, size.value-1]];
-
+    
     while (s_queue.length > 0){
         var [s_row, s_col] = s_queue.shift();
         var [f_row, f_col] = f_queue.shift();
@@ -368,50 +357,85 @@ function solve(){
             }
         }
     }
-
+    
 }
 
 function display_solve(){
-    display_maze();
-    if (solve_checkbox.checked){
-        [row, col] = meet_node;
-        while (parents[row][col].length == 3){
-            [parent_row, parent_col] = parents[row][col];
-            draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
-            [row, col] = [parent_row, parent_col];
+    [row, col] = meet_node;
+    while (parents[row][col].length == 3){
+        [parent_row, parent_col] = parents[row][col];
+        draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
+        [row, col] = [parent_row, parent_col];
+    }
+    
+    [row, col] = meet_node_adj;
+    while (parents[row][col].length == 3){
+        [parent_row, parent_col] = parents[row][col];
+        draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
+        [row, col] = [parent_row, parent_col];
+    }
+    
+    draw_line(offset + (edge_length*meet_node[1]), offset + (edge_length*meet_node[0]), offset + (edge_length*meet_node_adj[1]), offset + (edge_length*meet_node_adj[0]), 'solve');
+}
+
+function display_maze(){
+    // maze_canvas.style.height = `${Math.max(600, size.value*10)}px`
+    drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
+
+    //filled walls
+    edge_length = maze_canvas.width/size.value;
+
+    for (let row = 0; row<=size.value; row++){
+        draw_line(0, edge_length*row, maze_canvas.width, edge_length*row, 'base');
+    }
+    for (let col = 0; col<=size.value; col++){
+        draw_line(edge_length*col, 0, edge_length*col, maze_canvas.width, 'base');
+    }
+
+    //remove walls for path
+    for (let row = 0; row<size.value; row++){
+        for (let col = 0; col<size.value; col++){
+            direction_booleans = path_maze[row][col];
+            
+            for (let direction = 0; direction < 4; direction++){
+                if (!direction_booleans[direction]){
+                    continue;
+                }
+
+                y = (row*edge_length)+(edge_length/2);
+                x = (col*edge_length)+(edge_length/2);
+                if (dir_move[direction][0] == 0){//y doesn't change
+                    x = x+(dir_move[direction][1]*edge_length/2)
+                    draw_line(x, y-(edge_length/2)+drawable_maze_canvas.lineWidth, x, y+(edge_length/2)-drawable_maze_canvas.lineWidth, 'remove');
+                } else {
+                    y = y+(dir_move[direction][0]*edge_length/2)
+                    draw_line(x-(edge_length/2)+drawable_maze_canvas.lineWidth, y, x+(edge_length/2)-drawable_maze_canvas.lineWidth, y, 'remove');
+                }
+            }
         }
-
-        [row, col] = meet_node_adj;
-        while (parents[row][col].length == 3){
-            [parent_row, parent_col] = parents[row][col];
-            draw_line(offset + (edge_length*col), offset + (edge_length*row), offset + (edge_length*parent_col), offset + (edge_length*parent_row), 'solve');
-            [row, col] = [parent_row, parent_col];
-        }
-
-        draw_line(offset + (edge_length*meet_node[1]), offset + (edge_length*meet_node[0]), offset + (edge_length*meet_node_adj[1]), offset + (edge_length*meet_node_adj[0]), 'solve');
-
-        solve_label.innerHTML = "Hide Solution: "
-    } else {
-        solve_label.innerHTML = "Show Solution: "
     }
 }
 
 function draw_line(x1, y1, x2, y2, type) {
     if (type == 'remove'){
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth+1;
-        drawable_canvas.strokeStyle = 'black';
+        curr_canvas = drawable_maze_canvas;
+        curr_canvas.lineWidth = curr_canvas.lineWidth+1;
+        curr_canvas.strokeStyle = 'black';
     } else if (type == 'solve'){
-        drawable_canvas.strokeStyle = 'limegreen';
+        curr_canvas = drawable_solution_canvas;
+        curr_canvas.strokeStyle = 'limegreen';
     } else if (type == 'user'){
-        drawable_canvas.strokeStyle = 'cyan';
+        curr_canvas = drawable_user_canvas;
+        curr_canvas.strokeStyle = 'cyan';
     }else if (type == 'base'){
-        drawable_canvas.strokeStyle = 'antiquewhite';
+        curr_canvas = drawable_maze_canvas;
+        curr_canvas.strokeStyle = 'antiquewhite';
     }
-    drawable_canvas.beginPath();
-    drawable_canvas.moveTo(x1, y1);
-    drawable_canvas.lineTo(x2, y2);
-    drawable_canvas.stroke();
+    curr_canvas.beginPath();
+    curr_canvas.moveTo(x1, y1);
+    curr_canvas.lineTo(x2, y2);
+    curr_canvas.stroke();
     if (type == 'remove'){
-        drawable_canvas.lineWidth = drawable_canvas.lineWidth-1;
+        curr_canvas.lineWidth = curr_canvas.lineWidth-1;
     }
 }
