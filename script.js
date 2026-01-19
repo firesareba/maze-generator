@@ -86,7 +86,7 @@ document.onkeydown = function(event){
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
             if (visited[new_pos[0]][new_pos[1]]){
-                draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove');
+                draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove_user');
                 visited[user_pos[0]][user_pos[1]] = false;
             } else {
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'user');
@@ -427,7 +427,11 @@ function draw_line(x1, y1, x2, y2, type) {
     } else if (type == 'user'){
         curr_canvas = drawable_user_canvas;
         curr_canvas.strokeStyle = 'cyan';
-    }else if (type == 'base'){
+    } else if (type == 'remove_user'){
+        curr_canvas = drawable_user_canvas;
+        curr_canvas.lineWidth = curr_canvas.lineWidth+1;
+        curr_canvas.strokeStyle = 'black';
+    } else if (type == 'base'){
         curr_canvas = drawable_maze_canvas;
         curr_canvas.strokeStyle = 'antiquewhite';
     }
@@ -435,7 +439,7 @@ function draw_line(x1, y1, x2, y2, type) {
     curr_canvas.moveTo(x1, y1);
     curr_canvas.lineTo(x2, y2);
     curr_canvas.stroke();
-    if (type == 'remove'){
+    if (type == 'remove' || type == 'remove_user'){
         curr_canvas.lineWidth = curr_canvas.lineWidth-1;
     }
 }
