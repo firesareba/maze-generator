@@ -2,6 +2,7 @@
 const generation_method = document.getElementById("generation-method");
 const size = document.getElementById("size");
 const size_label = document.getElementById("size-label");
+const download_button = document.getElementById("download-button");
 const solve_checkbox = document.getElementById("solve-checkbox");
 const solve_label = document.getElementById("solve-label");
 
@@ -76,6 +77,18 @@ solve_checkbox.addEventListener("change", function(e){
     }
 });
 
+
+
+download_button.addEventListener("click", function(e){
+    var dataURL = maze_canvas.toDataURL("image/jpeg", 1.0);
+
+    var a = document.createElement('a');
+    a.href = dataURL;
+    a.download = 'maze.jpeg';
+    document.body.appendChild(a);
+    a.click();
+});
+
 document.onkeydown = function(event){
     if (user_pos[0] == size.value){
         return;
@@ -102,8 +115,7 @@ document.onkeydown = function(event){
 };
 //#endregion
 
-generate_maze()
-generate_maze()
+generate_maze();
 
 function opposite_dir(direction){
     return (direction+2)%4;
