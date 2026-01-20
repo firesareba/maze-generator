@@ -4,7 +4,7 @@ const size = document.getElementById("size");
 const size_label = document.getElementById("size-label");
 const download_button = document.getElementById("download-button");
 const solve_checkbox = document.getElementById("solve-checkbox");
-const solve_label = document.getElementById("solve-label");
+const blind_checkbox = document.getElementById("blind-checkbox");
 
 const maze_canvas = document.getElementById("maze")
 const drawable_maze_canvas = maze_canvas.getContext("2d");
@@ -28,6 +28,7 @@ solution_canvas.height = solution_canvas.width;
 size.value = 13;
 size_label.innerHTML = "Size: "+ size.value;
 solve_checkbox.checked = false;
+blind_checkbox.checked = true;
 drawable_maze_canvas.lineWidth = 2;
 drawable_maze_canvas.lineCap = 'round';
 //#endregion
@@ -70,14 +71,18 @@ generation_method.addEventListener("change", function(e){
 solve_checkbox.addEventListener("change", function(e){
     if (solve_checkbox.checked){
         solution_canvas.style.opacity = '100%';
-        solve_label.innerHTML = "Hide Solution: "
     } else {
         solution_canvas.style.opacity = '0%';
-        solve_label.innerHTML = "Show Solution: "
     }
 });
 
-
+blind_checkbox.addEventListener("change", function(e){
+    if (blind_checkbox.checked){
+        blind_canvas.style.opacity = '100%';
+    } else {
+        blind_canvas.style.opacity = '0%';
+    }
+});
 
 download_button.addEventListener("click", function(e){
     var dataURL = maze_canvas.toDataURL("image/jpeg", 1.0);
@@ -298,7 +303,6 @@ function reset_all(){
     visited = [];
     user_pos = [0, 0];
     solution_canvas.style.opacity = '0%';
-    solve_label.innerHTML = "Show Solution: "
     solve_checkbox.checked = false;
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
@@ -313,7 +317,7 @@ function reset_all(){
 
     drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
     drawable_user_canvas.clearRect(0, 0, user_canvas.width, user_canvas.height);
-    clear_user_circle()
+    clear_user_circle();
     drawable_solution_canvas.clearRect(0, 0, solution_canvas.width, solution_canvas.height);
 }
 
