@@ -31,7 +31,7 @@ drawable_maze_canvas.lineWidth = 2;
 drawable_maze_canvas.lineCap = 'round';
 //#endregion
 
-//#region constants
+//#region globals
 const dir_move = {
     0:[0, -1], //'←'
     1:[-1, 0], //'↑'
@@ -49,6 +49,8 @@ var parents = [];
 
 var user_pos = [0, 0];
 var visited = []
+var edge_length;
+var offset;
 //#endregion
 
 //#region listeners
@@ -78,13 +80,12 @@ document.onkeydown = function(event){
     if (user_pos[0] == size.value){
         return;
     }
-    edge_length = maze_canvas.width/size.value
-    offset = edge_length/2;
     if (37 <= event.keyCode && event.keyCode <= 40){
         event.preventDefault();
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
+            clear_user_circle();
             if (visited[new_pos[0]][new_pos[1]]){
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove_user');
                 visited[user_pos[0]][user_pos[1]] = false;
@@ -277,12 +278,14 @@ function make_bidirectional(){
     }
 }
 
-function resetAll(){
+function reset_all(){
     console.clear();
     path_maze = [];
     parents = [];
     visited = [];
     user_pos = [0, 0];
+    solution_canvas.style.opacity = '0%';
+    solve_label.innerHTML = "Show Solution: "
     solve_checkbox.checked = false;
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
@@ -297,12 +300,12 @@ function resetAll(){
 
     drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
     drawable_user_canvas.clearRect(0, 0, user_canvas.width, user_canvas.height);
-    drawable_blind_canvas.clearRect(0, 0, blind_canvas.width, blind_canvas.height);
+    clear_user_circle()
     drawable_solution_canvas.clearRect(0, 0, solution_canvas.width, solution_canvas.height);
 }
 
 function generate_maze(){
-    resetAll();
+    reset_all();
     edge_length = maze_canvas.width/size.value
     offset = edge_length/2;
 
@@ -322,6 +325,16 @@ function generate_maze(){
     path_maze[0][0][1] = true;
     path_maze[size.value-1][size.value-1][3] = true;
     display_maze()
+}
+
+function clear_user_circle(){
+    drawable_blind_canvas.save();
+    drawable_blind_canvas.fillRect(0, 0, blind_canvas.width, blind_canvas.height);
+    drawable_blind_canvas.beginPath();
+    drawable_blind_canvas.arc(offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 1000, 0, Math.PI * 2);
+    drawable_blind_canvas.clip();
+    drawable_blind_canvas.clearRect(0, 0, blind_canvas.width, blind_canvas.height);
+    drawable_blind_canvas.restore();
 }
 
 function solve(){
