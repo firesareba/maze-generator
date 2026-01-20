@@ -103,6 +103,7 @@ document.onkeydown = function(event){
 //#endregion
 
 generate_maze()
+generate_maze()
 
 function opposite_dir(direction){
     return (direction+2)%4;
