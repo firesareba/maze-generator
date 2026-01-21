@@ -298,6 +298,8 @@ function make_bidirectional(){
 
 function reset_all(){
     console.clear();
+    edge_length = maze_canvas.width/size.value
+    offset = edge_length/2;
     path_maze = [];
     parents = [];
     visited = [];
@@ -323,8 +325,6 @@ function reset_all(){
 
 function generate_maze(){
     reset_all();
-    edge_length = maze_canvas.width/size.value
-    offset = edge_length/2;
 
     if (generation_method.value == "origin-shift"){
         origin_shift()
@@ -348,7 +348,7 @@ function clear_user_circle(){
     drawable_blind_canvas.save();
     drawable_blind_canvas.fillRect(0, 0, blind_canvas.width, blind_canvas.height);
     drawable_blind_canvas.beginPath();
-    drawable_blind_canvas.arc(offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 1000, 0, Math.PI * 2);
+    drawable_blind_canvas.arc(offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), edge_length*2, 0, Math.PI * 2);
     drawable_blind_canvas.clip();
     drawable_blind_canvas.clearRect(0, 0, blind_canvas.width, blind_canvas.height);
     drawable_blind_canvas.restore();
