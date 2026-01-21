@@ -103,7 +103,6 @@ document.onkeydown = function(event){
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
-            clear_user_circle();
             if (visited[new_pos[0]][new_pos[1]]){
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove_user');
                 visited[user_pos[0]][user_pos[1]] = false;
@@ -115,6 +114,7 @@ document.onkeydown = function(event){
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
                 alert("You solved it!");
             }
+            clear_user_circle();
         }
     }
 };
