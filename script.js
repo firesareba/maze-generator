@@ -1,5 +1,6 @@
 //#region access html
 const generation_method = document.getElementById("generation-method");
+const stopwatch = document.getElementById("stopwatch")
 const size = document.getElementById("size");
 const size_label = document.getElementById("size-label");
 const download_button = document.getElementById("download-button");
@@ -51,6 +52,7 @@ var parents = [];
 
 var user_pos = [0, 0];
 var visited = []
+var time = 0;
 var edge_length;
 var offset;
 //#endregion
@@ -113,6 +115,15 @@ document.onkeydown = function(event){
             user_pos = new_pos;
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
                 alert("You solved it!");
+            } else if (time == 0){
+                stopwatch_interval = setInterval(function update_stopwatch() {
+                    time += 1;
+                    stopwatch.innerHTML = time%(100);
+                    stopwatch.innerHTML = Math.floor(time/100)%60 + "." + stopwatch.innerHTML;
+                    if (Math.floor(time/100)%60 >= 60){
+                        stopwatch.innerHTML = Math.floor(Math.floor(time/100)/60) + ":" + stopwatch.innerHTML;
+                    }
+                }, 10);
             }
             clear_user_circle();
         }
@@ -304,6 +315,7 @@ function reset_all(){
     parents = [];
     visited = [];
     user_pos = [0, 0];
+    time = 0;
     solution_canvas.style.opacity = '0%';
     solve_checkbox.checked = false;
     for (let row=0; row<size.value; row++){
