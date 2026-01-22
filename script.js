@@ -333,7 +333,7 @@ function reset_all(){
     time = 0;
     solve_checkbox.checked = false;
     solution_canvas.style.opacity = '0%';
-    blind_checkbox.checked = false;
+    blind_checkbox.checked = true;
     blind_canvas.style.opacity = '100%';
     stopwatch.innerHTML = "00.00 sec"
     for (let row=0; row<size.value; row++){
