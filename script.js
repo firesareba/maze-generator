@@ -115,15 +115,13 @@ document.onkeydown = function(event){
             user_pos = new_pos;
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
                 alert("You solved it!");
+                stopwatch_interval.clearInterval();
             } else if (time == 0){
-                stopwatch_interval = setInterval(function update_stopwatch() {
+                var stopwatch_interval = setInterval(function () {
                     time += 1;
-                    stopwatch.innerHTML = time%(100);
-                    stopwatch.innerHTML = Math.floor(time/100)%60 + "." + stopwatch.innerHTML;
-                    if (Math.floor(time/100)%60 >= 60){
-                        stopwatch.innerHTML = Math.floor(Math.floor(time/100)/60) + ":" + stopwatch.innerHTML;
-                    }
-                }, 10);
+                    console.log(time)
+                }, 100)
+                
             }
             clear_user_circle();
         }
