@@ -137,7 +137,7 @@ document.onkeydown = function(event){
                             }
                         }
                     }
-                }, 0.1)
+                }, 10)
                 
             }
             clear_user_circle();
