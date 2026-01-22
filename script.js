@@ -55,6 +55,7 @@ var visited = []
 var time = 0;
 var edge_length;
 var offset;
+var stopwatch_interval;
 //#endregion
 
 //#region listeners
@@ -114,13 +115,29 @@ document.onkeydown = function(event){
             }
             user_pos = new_pos;
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
+                clearInterval(stopwatch_interval);
+                stopwatch.innerHTML = "Final Time: "+stopwatch.innerHTML;
+                blind_checkbox.checked = false;
+                blind_canvas.style.opacity = '0%';
                 alert("You solved it!");
-                stopwatch_interval.clearInterval();
             } else if (time == 0){
-                var stopwatch_interval = setInterval(function () {
+                stopwatch_interval = setInterval(function () {
                     time += 1;
-                    console.log(time)
-                }, 100)
+                    temp_time = time;
+                    stopwatch.innerHTML = "."+(temp_time%100)+" secs";
+                    temp_time = Math.floor(temp_time/100);
+                    if (temp_time > 0){
+                        stopwatch.innerHTML = (temp_time%60)+stopwatch.innerHTML;
+                        temp_time = Math.floor(temp_time/60);
+                        if (temp_time > 0){
+                            stopwatch.innerHTML = (temp_time%60)+" mins, "+stopwatch.innerHTML;
+                            temp_time = Math.floor(temp_time/60);
+                            if (temp_time > 0){
+                                stopwatch.innerHTML = temp_time+"hrs, "+stopwatch.innerHTML;
+                            }
+                        }
+                    }
+                }, 0.1)
                 
             }
             clear_user_circle();
@@ -314,8 +331,11 @@ function reset_all(){
     visited = [];
     user_pos = [0, 0];
     time = 0;
-    solution_canvas.style.opacity = '0%';
     solve_checkbox.checked = false;
+    solution_canvas.style.opacity = '0%';
+    blind_checkbox.checked = false;
+    blind_canvas.style.opacity = '100%';
+    stopwatch.innerHTML = "00.00 sec"
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
