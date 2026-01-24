@@ -26,7 +26,7 @@ solution_canvas.height = solution_canvas.width;
 //#endregion
 
 //#region cookies
-size.value = 13;
+size.value = 5;
 size_label.innerHTML = "Size: "+ size.value;
 solve_checkbox.checked = false;
 blind_checkbox.checked = true;
@@ -51,7 +51,7 @@ var meet_node_adj;
 var parents = [];
 
 var user_pos = [0, 0];
-var visited = []
+var user_visited = []
 var time = 0;
 var edge_length;
 var offset;
@@ -106,12 +106,12 @@ document.onkeydown = function(event){
         direction = event.keyCode-37;
         new_pos =  [user_pos[0] + dir_move[direction][0], user_pos[1] + dir_move[direction][1]];
         if (path_maze[user_pos[0]][user_pos[1]][direction] && (0 <= new_pos[0] && new_pos[0] < size.value)){
-            if (visited[new_pos[0]][new_pos[1]]){
+            if (user_visited[new_pos[0]][new_pos[1]]){
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'remove_user');
-                visited[user_pos[0]][user_pos[1]] = false;
+                user_visited[user_pos[0]][user_pos[1]] = false;
             } else {
                 draw_line(offset + (edge_length*new_pos[1]), offset + (edge_length*new_pos[0]), offset + (edge_length*user_pos[1]), offset + (edge_length*user_pos[0]), 'user');
-                visited[user_pos[0]][user_pos[1]] = true;
+                user_visited[user_pos[0]][user_pos[1]] = true;
             }
             user_pos = new_pos;
             if (user_pos[0] == size.value-1 && user_pos[1] == size.value-1){
@@ -310,6 +310,23 @@ function hunt_and_kill(){
     }
 }
 
+function dsu(){
+    let unvisited = []
+    for (let row = 0; row<size.value-1; row++){
+        for (let col = 0; col<size.value-1; col++){
+            unvisited.push([row, col]);
+        }
+    }
+
+    while (unvisited.length > 0){
+        let [start_r, start_c] = unvisited[Math.floor(Math.random()*unvisited.length)];
+        unvisited.splice(unvisited.indexOf([start_r, start_c]), 1);
+        let [end_r, end_c] = unvisited[Math.floor(Math.random()*unvisited.length)];
+        unvisited.splice(unvisited.indexOf([end_r, end_c]), 1);
+        console.log(start_r, start_c, end_r, end_c);
+    }
+}
+
 function make_bidirectional(){
     for (let row=0; row<path_maze.length; row++){
         for (let col=0; col<path_maze.length; col++){
@@ -328,7 +345,7 @@ function reset_all(){
     offset = edge_length/2;
     path_maze = [];
     parents = [];
-    visited = [];
+    user_visited = [];
     user_pos = [0, 0];
     time = 0;
     solve_checkbox.checked = false;
@@ -339,11 +356,11 @@ function reset_all(){
     for (let row=0; row<size.value; row++){
         path_maze.push([]);
         parents.push([]);
-        visited.push([]);
+        user_visited.push([]);
         for (let col=0; col<size.value; col++){
             path_maze[row].push([false, false, false, false, false]);
             parents[row].push([]);
-            visited[row].push(false);
+            user_visited[row].push(false);
         }
     }
 
@@ -363,6 +380,9 @@ function generate_maze(){
         path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
+    }
+    else if (generation_method.value == "dsu"){
+        dsu()
     }
 
     make_bidirectional();
