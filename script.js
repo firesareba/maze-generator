@@ -391,7 +391,7 @@ function generate_maze(){
     }
 
     make_bidirectional();
-    solve(0, 0, size.value-1, size.value-1);
+    solve();
     display_solve();
 
     path_maze[0][0][1] = true;
@@ -409,9 +409,9 @@ function clear_user_circle(){
     drawable_blind_canvas.restore();
 }
 
-function solve(start_r, start_c, end_r, end_c){
-    s_queue = [[start_r, start_c]];
-    f_queue = [[end_r, end_c]];
+function solve(){
+    s_queue = [[0, 0]];
+    f_queue = [[size.value-1, size.value-1]];
     
     while (s_queue.length > 0){
         var [s_row, s_col] = s_queue.shift();
