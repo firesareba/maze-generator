@@ -319,11 +319,8 @@ function dsu(){
     }
 
     while (unvisited.length > 0){
-        let [start_r, start_c] = unvisited[Math.floor(Math.random()*unvisited.length)];
-        unvisited.splice(unvisited.indexOf([start_r, start_c]), 1);
-        let [end_r, end_c] = unvisited[Math.floor(Math.random()*unvisited.length)];
-        unvisited.splice(unvisited.indexOf([end_r, end_c]), 1);
-        console.log(start_r, start_c, end_r, end_c);
+        let [start_r, start_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
+        let [end_r, end_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
     }
 }
 
