@@ -31,6 +31,12 @@ canvas {
     aspect-ratio: 1;
 }
 
+footer {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}
+
 #maze{
     z-index: 1;
 }
