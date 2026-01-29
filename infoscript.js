@@ -25,11 +25,9 @@ const dir_move = {
 
 let size = 10;
 
-var path_maze = [];
+var active = [false, false, false]; //dfs, hunt, origin
 
-var meet_node;
-var meet_node_adj;
-var parents = [];
+var path_maze = [];
 
 var edge_length;
 var offset;
@@ -66,37 +64,13 @@ function get_direction_choices(row, col){
     return direction_choices;
 }
 
-async function origin_shift(){
-    //create base
-    for (let row = 0; row<size; row++){
-        for (let col = 0; col<size; col++){
-            path_maze[row][col][2] = true;
-        }
-        path_maze[row][size-1][2] = false;
-        path_maze[row][size-1][3] = true;
-    }
-    origin_pos = [size-1, size-1];
-    path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
-
-    for (let i = 0; i<size**3; i++){
-        display_maze();
-        await sleep(10);
-        direction_choices = get_direction_choices(origin_pos[0], origin_pos[1])
-
-        direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
-
-        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, false];
-        path_maze[origin_pos[0]][origin_pos[1]][direction] = true;
-
-        origin_pos = [origin_pos[0]+dir_move[direction][0], origin_pos[1]+dir_move[direction][1]];
-        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
-    }
-}
-
 async function dfs(row, col){
     //generate Solution
     var stack = [[row, col]];
     while (!(row == size-1 && col == size-1)){
+        if (generation_method.value != "dfs"){
+            return;
+        }
         display_maze();
         await sleep(100);
         [row, col] = stack.pop();
@@ -150,6 +124,9 @@ async function dfs(row, col){
                 while (stack.length > 0){
                     [row, col] = stack.pop();
                     while (true){
+                        if (generation_method.value != "dfs"){
+                            return;
+                        }
                         display_maze();
                         await sleep(100);
                         direction_choices = get_direction_choices(row, col);
@@ -178,6 +155,9 @@ async function hunt_and_kill(){
     var open_nodes = [[0, 0]];
     var backup_nodes = [];
     while (open_nodes.length + backup_nodes.length > 0){ 
+        if (generation_method.value != "hunt-and-kill"){
+            return;
+        }
         display_maze();
         await sleep(100);
         
@@ -213,6 +193,36 @@ async function hunt_and_kill(){
     }
 }
 
+async function origin_shift(){
+    //create base
+    for (let row = 0; row<size; row++){
+        for (let col = 0; col<size; col++){
+            path_maze[row][col][2] = true;
+        }
+        path_maze[row][size-1][2] = false;
+        path_maze[row][size-1][3] = true;
+    }
+    origin_pos = [size-1, size-1];
+    path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
+
+    for (let i = 0; i<size**3; i++){
+        if (generation_method.value != "origin-shift"){
+            return;
+        }
+        display_maze();
+        await sleep(10);
+        direction_choices = get_direction_choices(origin_pos[0], origin_pos[1])
+
+        direction = direction_choices[Math.floor(Math.random()*direction_choices.length)];
+
+        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, false];
+        path_maze[origin_pos[0]][origin_pos[1]][direction] = true;
+
+        origin_pos = [origin_pos[0]+dir_move[direction][0], origin_pos[1]+dir_move[direction][1]];
+        path_maze[origin_pos[0]][origin_pos[1]] = [false, false, false, false, true];
+    }
+}
+
 function make_bidirectional(){
     for (let row=0; row<path_maze.length; row++){
         for (let col=0; col<path_maze.length; col++){
@@ -230,13 +240,10 @@ function reset_all(){
     edge_length = maze_canvas.width/size
     offset = edge_length/2;
     path_maze = [];
-    parents = [];
     for (let row=0; row<size; row++){
         path_maze.push([]);
-        parents.push([]);
         for (let col=0; col<size; col++){
             path_maze[row].push([false, false, false, false, false]);
-            parents[row].push([]);
         }
     }
 
@@ -246,21 +253,31 @@ function reset_all(){
 }
 
 async function generate_maze(){
+    while (active.includes(true)){
+        continue;
+    }
+
     reset_all();
 
-    if (generation_method.value == "origin-shift"){
-        description_title.innerHTML = "Origin Shift";
-        description.innerHTML = "We pre-generate a perfect maze with each row open and the last column open. we set all rows pointing to the right and the last colum pointing down, with the bottom right beign the origin. We then move the origin randomly to it's 4 neighbors n^3 times where n is the size of the maze. This ensures the entire maze will be sufficiently scrambled. When the origin moves, it moves the arrows to point to the new origin, thus adding/breaking walls.";
-        await origin_shift()
-    } else if (generation_method.value == "dfs"){
+    if (generation_method.value == "dfs"){
         description_title.innerHTML = "Depth First Search (DFS)";
         description.innerHTML = "For Depth First Search (DFS), we first generate the solution path. To do this, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. Then we go to a random neighbor, and update it's direction so it is visited from the stuck node, not wherever it was before. We do this until we get to the end of the maze. Then we reset everything that isn't on the solution path. After this, we go to each cell in a random order, and check if it has unvisited neighbors. If yes, perform dfs same algorithm as before UNTIL STUCK, then abandon. If you do this for all possible cells, you get a full maze.";
+        active[0] = true;
         await dfs(0, 0)
         path_maze[0][0][1] = false;
+        active[0] = false;
     } else if (generation_method.value == "hunt-and-kill"){
         description_title.innerHTML = "Hunt and Kill";
         description.innerHTML = "Similar to DFS, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. While traversing, we are keeping track of each cell that is still open. Being open means it still has at least one unvisited neighbor. Once stuck, we go to a random open node and check if it is still open. If so, we start hunt and kill again from this node. Once their are no open nodes left, the entire maze has been traversed.";
+        active[1] = true;
         await hunt_and_kill();
+        active[1] = false;
+    }else if (generation_method.value == "origin-shift"){
+        description_title.innerHTML = "Origin Shift";
+        description.innerHTML = "We pre-generate a perfect maze with each row open and the last column open. we set all rows pointing to the right and the last colum pointing down, with the bottom right beign the origin. We then move the origin randomly to it's 4 neighbors n^3 times where n is the size of the maze. This ensures the entire maze will be sufficiently scrambled. When the origin moves, it moves the arrows to point to the new origin, thus adding/breaking walls.";
+        active[2] = true;
+        await origin_shift()
+        active[2] = false;
     }
 
     make_bidirectional();
@@ -268,7 +285,7 @@ async function generate_maze(){
     path_maze[0][0][1] = true;
     path_maze[size-1][size-1][3] = true;
     display_maze();
-    console.log("done")
+    console.log(active);
 }
 
 function sleep(ms){
