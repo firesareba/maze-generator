@@ -254,6 +254,7 @@ function reset_all(){
 
 async function generate_maze(){
     while (active.includes(true)){
+        await sleep(100);
         continue;
     }
 
@@ -285,7 +286,6 @@ async function generate_maze(){
     path_maze[0][0][1] = true;
     path_maze[size-1][size-1][3] = true;
     display_maze();
-    console.log(active);
 }
 
 function sleep(ms){
