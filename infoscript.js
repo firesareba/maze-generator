@@ -93,11 +93,10 @@ async function origin_shift(){
 
 async function dfs(row, col){
     //generate Solution
-    var stack = [[0,0]];
+    var stack = [[row, col]];
     while (!(row == size-1 && col == size-1)){
+        display_maze();
         await sleep(100);
-        display_maze()
-
         [row, col] = stack.pop();
         if (path_maze[row][col].includes(true)){
             path_maze[row][col] = [false, false, false, false, false];
@@ -128,7 +127,6 @@ async function dfs(row, col){
     }
     path_maze[row][col][4] = true;//except for ending
 
-
     //Check for open
     rows_to_check = [];
     for (let i = 0; i < size; i++){
@@ -150,6 +148,8 @@ async function dfs(row, col){
                 while (stack.length > 0){
                     [row, col] = stack.pop();
                     while (true){
+                        display_maze();
+                        await sleep(100);
                         direction_choices = get_direction_choices(row, col);
                         if (direction_choices.length > 0) {
                             if (direction_choices.length > 1){
@@ -176,8 +176,8 @@ async function hunt_and_kill(){
     var open_nodes = [[0, 0]];
     var backup_nodes = [];
     while (open_nodes.length + backup_nodes.length > 0){ 
+        display_maze();
         await sleep(100);
-        display_maze()
         
         if (open_nodes.length > 0){
             [row, col] = open_nodes.shift();
@@ -208,28 +208,6 @@ async function hunt_and_kill(){
         } else if (!path_maze[row][col].includes(true)){
             path_maze[row][col][4] = true;
         }
-    }
-}
-
-function dsu(){
-    groups = [];
-    for (let row=0; row<size; row++){
-        groups.push([]);
-        for (let col=0; col<size; col++){
-            groups[row].push(0);
-        }
-    }
-
-    let unvisited = []
-    for (let row = 0; row<size-1; row++){
-        for (let col = 0; col<size-1; col++){
-            unvisited.push([row, col]);
-        }
-    }
-
-    while (unvisited.length > 0){
-        let [start_r, start_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
-        let [end_r, end_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
     }
 }
 
@@ -265,26 +243,24 @@ function reset_all(){
     drawable_maze_canvas.fillRect(0, 0, maze_canvas.width, maze_canvas.height);
 }
 
-function generate_maze(){
+async function generate_maze(){
     reset_all();
 
     if (generation_method.value == "origin-shift"){
-        origin_shift()
+        await origin_shift()
     } else if (generation_method.value == "dfs"){
-        dfs(0, 0, 1)
+       await dfs(0, 0)
         path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
-        hunt_and_kill()
-    }
-    else if (generation_method.value == "dsu"){
-        dsu()
+        await hunt_and_kill();
     }
 
     make_bidirectional();
 
     path_maze[0][0][1] = true;
     path_maze[size-1][size-1][3] = true;
-    display_maze()
+    display_maze();
+    console.log("done")
 }
 
 function sleep(ms){

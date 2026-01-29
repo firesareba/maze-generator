@@ -198,7 +198,7 @@ function origin_shift(){
 
 function dfs(row, col){
     //generate Solution
-    var stack = [[0,0]];
+    var stack = [[row, col]];
     while (!(row == size.value-1 && col == size.value-1)){
         [row, col] = stack.pop();
         if (path_maze[row][col].includes(true)){
@@ -383,7 +383,7 @@ function generate_maze(){
     if (generation_method.value == "origin-shift"){
         origin_shift()
     } else if (generation_method.value == "dfs"){
-        dfs(0, 0, 1)
+        dfs(0, 0)
         path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
