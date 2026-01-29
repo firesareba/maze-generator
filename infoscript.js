@@ -1,7 +1,9 @@
 //#region access html
 const generation_method = document.getElementById("generation-method");
 
-const maze_canvas = document.getElementById("maze")
+const description = document.getElementById("description");
+const description_title = document.getElementById("description-title");
+const maze_canvas = document.getElementById("simulation-maze")
 const drawable_maze_canvas = maze_canvas.getContext("2d");
 maze_canvas.width = 2000;
 maze_canvas.height = maze_canvas.width;
@@ -247,11 +249,17 @@ async function generate_maze(){
     reset_all();
 
     if (generation_method.value == "origin-shift"){
+        description_title.innerHTML = "Origin Shift";
+        description.innerHTML = "We pre-generate a perfect maze with each row open and the last column open. we set all rows pointing to the right and the last colum pointing down, with the bottom right beign the origin. We then move the origin randomly to it's 4 neighbors n^3 times where n is the size of the maze. This ensures the entire maze will be sufficiently scrambled. When the origin moves, it moves the arrows to point to the new origin, thus adding/breaking walls.";
         await origin_shift()
     } else if (generation_method.value == "dfs"){
-       await dfs(0, 0)
+        description_title.innerHTML = "Depth First Search (DFS)";
+        description.innerHTML = "For Depth First Search (DFS), we first generate the solution path. To do this, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. Then we go to a random neighbor, and update it's direction so it is visited from the stuck node, not wherever it was before. We do this until we get to the end of the maze. Then we reset everything that isn't on the solution path. After this, we go to each cell in a random order, and check if it has unvisited neighbors. If yes, perform dfs same algorithm as before UNTIL STUCK, then abandon. If you do this for all possible cells, you get a full maze.";
+        await dfs(0, 0)
         path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
+        description_title.innerHTML = "Hunt and Kill";
+        description.innerHTML = "Similar to DFS, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. While traversing, we are keeping track of each cell that is still open. Being open means it still has at least one unvisited neighbor. Once stuck, we go to a random open node and check if it is still open. If so, we start hunt and kill again from this node. Once their are no open nodes left, the entire maze has been traversed.";
         await hunt_and_kill();
     }
 

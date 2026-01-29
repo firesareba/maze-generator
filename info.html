@@ -6,13 +6,18 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="display">
-            <canvas id="maze"></canvas>
+        <div class="horizontal-parent">
+            <div>
+                <canvas class="horizontal-child" id="simulation-maze"></canvas>
+            </div>
+            <h1 id="description-title"></h1>
+            <p id="description" class="horizontal-child">
+            </p>
         </div>
 
         <select id="generation-method">
-            <option value="origin-shift">Origin Shift</option>
             <option value="dfs">DFS</option>
+            <option value="origin-shift">Origin Shift</option>
             <option value="hunt-and-kill">Hunt and Kill</option>
         </select>
 
