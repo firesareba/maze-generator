@@ -30,7 +30,7 @@ size.value = 5;
 size_label.innerHTML = "Size: "+ size.value;
 solve_checkbox.checked = false;
 blind_checkbox.checked = true;
-drawable_maze_canvas.lineWidth = 2;
+drawable_maze_canvas.lineWidth = 3;
 drawable_maze_canvas.lineCap = 'round';
 //#endregion
 
@@ -348,7 +348,7 @@ function reset_all(){
     }
 
     drawable_maze_canvas.clearRect(0, 0, maze_canvas.width, maze_canvas.height);
-    drawable_maze_canvas.fillStyle = "darkgoldenrod";
+    drawable_maze_canvas.fillStyle = "rgb(50, 50, 50)";
     drawable_maze_canvas.fillRect(0, 0, maze_canvas.width, maze_canvas.height);
     drawable_user_canvas.clearRect(0, 0, user_canvas.width, user_canvas.height);
     clear_user_circle();
@@ -488,20 +488,20 @@ function draw_line(x1, y1, x2, y2, type) {
     if (type == 'remove'){
         curr_canvas = drawable_maze_canvas;
         curr_canvas.lineWidth = curr_canvas.lineWidth+1;
-        curr_canvas.strokeStyle = 'darkgoldenrod';
+        curr_canvas.strokeStyle = 'rgb(50, 50, 50)';
     } else if (type == 'solve'){
         curr_canvas = drawable_solution_canvas;
         curr_canvas.strokeStyle = 'rgb(0, 255, 0)';
     } else if (type == 'user'){
         curr_canvas = drawable_user_canvas;
-        curr_canvas.strokeStyle = 'indigo';
+        curr_canvas.strokeStyle = 'cyan';
     } else if (type == 'remove_user'){
         curr_canvas = drawable_user_canvas;
         curr_canvas.lineWidth = curr_canvas.lineWidth+1;
-        curr_canvas.strokeStyle = 'darkgoldenrod';
+        curr_canvas.strokeStyle = 'rgb(50, 50, 50)';
     } else if (type == 'base'){
         curr_canvas = drawable_maze_canvas;
-        curr_canvas.strokeStyle = 'black';
+        curr_canvas.strokeStyle = 'antiquewhite';
     }
     curr_canvas.beginPath();
     curr_canvas.moveTo(x1, y1);
