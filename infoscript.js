@@ -262,7 +262,7 @@ async function generate_maze(){
 
     if (generation_method.value == "dfs"){
         description_title.innerHTML = "Depth First Search (DFS)";
-        description.innerHTML = "For Depth First Search (DFS), we first generate the solution path. To do this, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. Then we go to a random neighbor, and update it's direction so it is visited from the stuck node, not wherever it was before. We do this until we get to the end of the maze. Then we reset everything that isn't on the solution path. After this, we go to each cell in a random order, and check if it has unvisited neighbors. If yes, perform dfs same algorithm as before UNTIL STUCK, then abandon. If you do this for all possible cells, you get a full maze.";
+        description.innerHTML = "For Depth First Search (DFS), we first generate the solution path. To do this, we start at 0, 0, and then go randomly to neighbors until we get stuck. Being stuck means that all neighbors are visited. Then we backtrack till we get an open neighbor. Then start DFS from here again. We do this until we get to the end of the maze. Then we reset everything that isn't on the solution path. After this, we go to each cell in a random order, and check if it has unvisited neighbors. If yes, perform dfs same algorithm as before UNTIL STUCK, then abandon. If you do this for all possible cells, you get a full maze.";
         active[0] = true;
         await dfs(0, 0)
         path_maze[0][0][1] = false;
