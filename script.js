@@ -310,28 +310,6 @@ function hunt_and_kill(){
     }
 }
 
-function dsu(){
-    groups = [];
-    for (let row=0; row<size.value; row++){
-        groups.push([]);
-        for (let col=0; col<size.value; col++){
-            groups[row].push(0);
-        }
-    }
-
-    let unvisited = []
-    for (let row = 0; row<size.value-1; row++){
-        for (let col = 0; col<size.value-1; col++){
-            unvisited.push([row, col]);
-        }
-    }
-
-    while (unvisited.length > 0){
-        let [start_r, start_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
-        let [end_r, end_c] = unvisited.splice(Math.floor(Math.random()*unvisited.length), 1);
-    }
-}
-
 function make_bidirectional(){
     for (let row=0; row<path_maze.length; row++){
         for (let col=0; col<path_maze.length; col++){
@@ -387,9 +365,6 @@ function generate_maze(){
         path_maze[0][0][1] = false;
     } else if (generation_method.value == "hunt-and-kill"){
         hunt_and_kill()
-    }
-    else if (generation_method.value == "dsu"){
-        dsu()
     }
 
     make_bidirectional();
