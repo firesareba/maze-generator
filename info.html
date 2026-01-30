@@ -6,20 +6,56 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="horizontal-parent">
-            <div>
-                <canvas class="horizontal-child" id="simulation-maze"></canvas>
+        <div id="simulation">
+            <div class="horizontal-parent">
+                <div>
+                    <canvas class="horizontal-child" id="simulation-maze"></canvas>
+                </div>
+                <h1 id="description-title"></h1>
+                <p id="description" class="horizontal-child">
+                </p>
             </div>
-            <h1 id="description-title"></h1>
-            <p id="description" class="horizontal-child">
-            </p>
+    
+            <select id="generation-method">
+                <option value="dfs">DFS</option>
+                <option value="hunt-and-kill">Hunt and Kill</option>
+                <option value="origin-shift">Origin Shift</option>
+            </select>
         </div>
+        <div id="instructions" class="horizontal-parent">
+            <div id="left" class="horizontal-child">
+                <h3>User Movement</h3>
+                <p>
+                    Use arrow keys to move. There will be a popup once you complete the maze. If maze is too small because of blind mode, zoom in!
+                </p>
+                <h3>Dropdown</h3>
+                <p>
+                    Choose the generation method of your maze. 
+                    <br><strong>DFS</strong> has long, messy paths that don't turn back a lot with less detours. However, those detours are really long, so it is frustrating.
+                    <br><strong>Hunt and Kill</strong> Generally goes down and to the right, Like DFS it has long detours but they are slightly shorter and appear more often.
+                    <br><strong>Origin Shift</strong> Many smaller detours, many one cell dead ends. Very few long detours. Most like a childhood maze. It might take a while to generate for bigger mazes(5 sec max).
+                </p>
+            </div>
 
-        <select id="generation-method">
-            <option value="dfs">DFS</option>
-            <option value="hunt-and-kill">Hunt and Kill</option>
-            <option value="origin-shift">Origin Shift</option>
-        </select>
+            <div id="right" class="horizontal-child">
+                <h3>Slider</h3>
+                <p>
+                    Choose the size of your maze. Range is from 2x2 to 450x450. Size is in # of cells in a row. Bigger mazes have smaller cells.
+                </p>
+                <h3>Solution</h3>
+                <p>
+                    Check box to show/hide solution path. Shows OVER blind mode.
+                </p>
+                <h3>Blind Mode</h3>
+                <p>
+                    Check box to turn on/off blind mode. Blind mode makes it feel as if user is in a dark maze, holding a torch, so can only see as far as the torch lights up, in a circle.
+                </p>
+                <h3>Download Maze</h3>
+                <p>
+                    Want to print out the maze for a camping trip? Press the download button to get a png of the maze(no extra markings(user, solution, blind mode)).
+                </p>
+            </div>
+        </div>
 
         <footer>
             *Proceed to <a href="./index.html">Maze Generator</a>
